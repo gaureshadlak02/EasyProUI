@@ -1,0 +1,516 @@
+<h3 class="heading">Customer Master List</h3>
+<div class="marginbound">
+  <div class="row heading">
+    <div class="col-md-8"> 
+      <button  type="button" class="btn btn-primary space" (click)="addCustomer()"> 
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        Add Customer</button>
+      <button  class="btn btn-success succes" (click)="exportTable()" >
+        <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+        Export To Excel</button>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group form-group-1 has-feedback has-search">
+          <span class="glyphicon glyphicon-search form-control-feedback"></span>
+          <input class="searchbox" placeholder="Search" type="text" class="form-control"
+              (keyup)="applyFilter($event.target.value)">
+      </div> 
+      </div>
+      </div>
+  <mat-card >
+    <div class="table-responsive">
+    <table id = "CustomerTable" class="table table-bordered" mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cusCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+        <td mat-cell *matCellDef="let element"> {{element.cusCode}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cusName" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header >Name </th>
+        <td mat-cell *matCellDef="let element" > {{element.cusName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="address1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
+        <td mat-cell *matCellDef="let element" > {{element.address1}} </td>
+      </ng-container>
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+        <td mat-cell *matCellDef="let element" > {{element.phone}} </td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+       <ng-container matColumnDef="HomePage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Web Site </th>
+        <td mat-cell *matCellDef="let element"> <a [href]="element.homePage" target="_blank">{{element.homePage}} </a></td>
+      </ng-container>
+      <ng-container matColumnDef="Country">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Country </th>
+        <td mat-cell *matCellDef="let element" [title]="element.cnt.countryName" > {{element.cnt.countryName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Currency">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Currency </th>
+        <td mat-cell *matCellDef="let element"> {{element.currency}} </td>
+      </ng-container>
+      <ng-container matColumnDef="CreatedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element"> {{element.CreatedBy}} </td>
+      </ng-container>
+      <ng-container matColumnDef="CreatedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.CreatedDate | date: 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Update">
+        <th mat-header-cell *matHeaderCellDef >Edit</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary"  matTooltip="Edit" (click)="editCustomer(element.id)">
+            <i class="fa fa-edit"></i>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Delete">
+        <th mat-header-cell *matHeaderCellDef >Delete</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="warn"  matTooltip="Delete" (click)="deleteCustomer(element.id)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30 ,100,dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+  </div>
+  <!-- AddForm Model Pop-Up -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"  style="visibility: hidden;"#addModal
+  data-target="#addModal">
+</button>
+<div class="modal " id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered addmodalwidth" role="document">
+  <div class="modal-content contentwidth">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLongTitle"> Add Customer Details</h5>
+      <button type="button" class="close" #closeaddModal data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <label> <span class="required">*</span> Mandatory Field</label>
+    <div class="modal-body">
+      <form [formGroup]="cusAddForm" (ngSubmit)="onADD()" novalidate>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcusCode">Code <span class="required">*</span></label>
+          <input type="text" class="form-control" formControlName="cusCode" placeholder="Enter customerCode" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.cusCode.touched && cusAddForm.controls.cusCode.errors?.required">
+            Please enter cusCode.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputcusName" >Name <span class="required">*</span></label>
+          <input type="text" class="form-control" formControlName="cusName" placeholder="Enter Customer Name" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.cusName.touched && cusAddForm.controls.cusName.errors?.required">
+            Please enter Customer Name.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputaddress1">Address<span class="required">*</span></label>
+          <input type="text" class="form-control" formControlName="address1" placeholder="Enter Customer Address" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.address1.touched && cusAddForm.controls.address1.errors?.required">
+            Please enter Address.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputphone">Phone</label>
+          <input type="text" class="form-control" formControlName="phone" placeholder="Enter Phone" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.phone.touched && cusAddForm.controls.phone.errors?.required">
+            Please enter Phone.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputemail">Email</label>
+          <input type="text" class="form-control" formControlName="email" placeholder="Enter Email" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.email.touched && cusAddForm.controls.email.errors?.required">
+            Please enter Email.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputhomePage">Web Site</label>
+          <input type="text" class="form-control" formControlName="homePage" placeholder="Enter Web Site" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.homePage.touched && cusAddForm.controls.homePage.errors?.required">
+            Please enter Web Site.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcountry">Country<span class="required">*</span></label>
+          <select class="form-control" formControlName="country" (change)="onCountryChange($event)">
+            <option value="" disabled>Please Select Country</option>
+            <option [value]="countryResponse.countryCode" *ngFor="let countryResponse of countryResponses">{{countryResponse.countryName}}</option>
+          </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.country.touched && cusAddForm.controls.country.errors?.required">
+            Please enter country.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcurrency">Currency<span class="required">*</span></label>
+          <!-- <input type="text" class="form-control" formControlName="currency" placeholder="Enter Currency" > -->
+          <select class="form-control" formControlName="currency" >
+          <option value="" disabled>Please Select Currency</option>
+          <option [value]="currencyResponse.currencyCode" *ngFor="let currencyResponse of currencyResponses">{{currencyResponse.currencyName}}</option>
+          </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.currency.touched && cusAddForm.controls.currency.errors?.required">
+            Please enter Currency.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputfax">Fax</label>
+          <input type="text" class="form-control" formControlName="fax" placeholder="Enter Fax" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.fax.touched && cusAddForm.controls.fax.errors?.required">
+            Please enter fax.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcategory">Category</label>
+          <select  class="form-control" formControlName="category">
+            <option value="" disabled>Please Select Category</option>
+            <option value="L"> Saudi Arabia</option>
+            <option value="F"> Others</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.category.touched && cusAddForm.controls.category.errors?.required">
+            Please enter category.!
+          </small>
+        </div>
+        <!-- <div class="form-group col-md-4">
+          <label for="exampleInputcontact">Contact<span class="required">*</span></label>
+          <select  class="form-control" formControlName="contact">
+            <option value="" disabled>Please Select Contact</option>
+            <option [value]="contactResponse.conCode" *ngFor="let contactResponse of contactResponses">{{contactResponse.conName}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.contact.touched && cusAddForm.controls.contact.errors?.required">
+            Please enter contact.!
+          </small>
+        </div> -->
+        <div class="form-group col-md-4">
+          <label for="exampleInputstatus" style="width: 100px">Status </label>
+          <label class="switch" style="width: 100px">
+            <input type="checkbox" class="form-control" formControlName="status" />
+            <span class="slider round"></span>
+          </label>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.status.touched && cusAddForm.controls.status.errors?.required">
+            Please click status.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcuspayTerms">Pay Terms<span class="required">*</span></label>
+          <select  class="form-control" formControlName="payTerms">
+            <option value="" disabled>Please Select PayTerms</option>
+            <option [value]="payTermsResponse.payTermCode" *ngFor="let payTermsResponse of payTermsResponses">{{payTermsResponse.payTermDesc}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.payTerms.touched && cusAddForm.controls.payTerms.errors?.required">
+            Please enter payTerms.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvendorID">Vendor ID</label>
+          <input type="text" class="form-control" formControlName="vendorID" placeholder="Enter Vendor ID" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.vendorID.touched && cusAddForm.controls.vendorID.errors?.required">
+            Please enter vendorID.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcustomerPostingGlAcct">Customer PostingGlAcct<span class="required">*</span></label>
+          <select  class="form-control" formControlName="customerPostingGlAcct">
+            <option value="" disabled>Please Select PostingGlAcct</option>
+            <option [value]="customerPostingGlAcctResponse.entryNo" *ngFor="let customerPostingGlAcctResponse of customerPostingGlAcctResponses">{{customerPostingGlAcctResponse.postingCode}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.customerPostingGlAcct.touched && cusAddForm.controls.customerPostingGlAcct.errors?.required">
+            Please enter customerPostingGlAcct.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvatPostingGlAcct">VatPostingGlAcct</label>
+          <input type="text" class="form-control" formControlName="vatPostingGlAcct" placeholder="Enter VatPostingGlAcct" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.vatPostingGlAcct.touched && cusAddForm.controls.vatPostingGlAcct.errors?.required">
+            Please enter vatPostingGlAcct.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputtaxCode">Tax Code<span class="required">*</span></label>
+          <select  class="form-control" formControlName="taxCode">
+            <option value="" disabled>Please Select Tax Code</option>
+            <option [value]="taxCodeResponse.taxCode" *ngFor="let taxCodeResponse of taxCodeResponses">{{taxCodeResponse.taxDescription}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.taxCode.touched && cusAddForm.controls.taxCode.errors?.required">
+            Please enter taxCode.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvaTid">Vat Id</label>
+          <input type="text" class="form-control" formControlName="vaTid" placeholder="Enter Vat Id" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.vaTid.touched && cusAddForm.controls.vaTid.errors?.required">
+            Please enter vaTid.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputcusName_Arabic">Customer Name Arabic</label>
+          <input type="text" class="form-control" formControlName="cusName_Arabic" placeholder="أدخل اسم العميل باللغة العربية" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.cusName_Arabic.touched && cusAddForm.controls.cusName_Arabic.errors?.required">
+            Please enter cusName_Arabic.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputaddress1_Arabic">Address Arabic</label>
+          <input type="text" class="form-control" formControlName="address1_Arabic" placeholder="أدخل العنوان باللغة العربية" >
+          <small class="form-text  "
+            *ngIf="cusAddForm.controls.address1_Arabic.touched && cusAddForm.controls.address1_Arabic.errors?.required">
+            Please enter address1_Arabic.!
+          </small>
+        </div>
+      <div class="form-group col-md-8">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-top:25px;margin-right:8px">Close</button>
+        <button type="submit" class="btn btn-primary regbtn" [disabled]="!cusAddForm.valid" style="margin-top:25px;">Save</button>
+      </div>
+      </form>
+        </div>
+        </div>
+        </div>
+        </div>
+
+    <!-- updateForm  Model Pop-Up-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"  style="visibility: hidden;"#updateModal
+  data-target="#updateModal">
+</button>
+
+<!-- Modal -->
+<div class="modal " id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered updatemodalwidth"  role="document">
+    <div class="modal-content contentwidth">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Customer Details</h5>
+        <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <label> <span class="required">*</span> Mandatory Field</label>
+      <div class="modal-body">
+
+        <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" novalidate>
+          <div class="form-group col-md-8">
+            <label for="exampleInputcusName">Name<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cusName" placeholder="Enter Customer Name" >
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cusName.touched && updateForm.controls.cusName.errors?.required">
+              Please enter Customer Name.!
+            </small>
+          </div>
+          <div class="form-group col-md-8">
+            <label for="exampleInputaddress1">Address<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="address1" placeholder="Enter Address" >
+            <small class="form-text  "
+              *ngIf="updateForm.controls.address1.touched && updateForm.controls.address1.errors?.required">
+              Please enter Address.!
+            </small>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="exampleInputphone">Phone</label>
+            <input type="text" class="form-control" formControlName="phone" placeholder="Enter Phone" >
+            <small class="form-text  "
+              *ngIf="updateForm.controls.phone.touched && updateForm.controls.phone.errors?.required">
+              Please enter Phone.!
+            </small>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="exampleInputemail">Email</label>
+            <input type="text" class="form-control" formControlName="email" placeholder="Enter Email" >
+            <small class="form-text  "
+              *ngIf="updateForm.controls.email.touched && updateForm.controls.email.errors?.required">
+              Please enter Email.!
+            </small>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="exampleInputhomePage">Web Site</label>
+            <input type="text" class="form-control" formControlName="homePage" placeholder="Enter HomePage" >
+            <small class="form-text  "
+              *ngIf="updateForm.controls.homePage.touched && updateForm.controls.homePage.errors?.required">
+              Please enter Home Page.!
+            </small>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="exampleInputcountry">Country<span class="required">*</span></label>
+            <select class="form-control" formControlName="country" (change)="onCountryChange($event)">
+              <option value="" disabled>Please Select Country</option>
+              <option [value]="countryResponse.countryCode" *ngFor="let countryResponse of countryResponses">{{countryResponse.countryName}}</option>
+            </select>
+            <small class="form-text  "
+              *ngIf="updateForm.controls.country.touched && updateForm.controls.country.errors?.required">
+              Please enter country.!
+            </small>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="exampleInputcurrency">Currency<span class="required">*</span></label>
+            <select class="form-control" formControlName="currency">
+              <option value="" disabled>Please Select Currency</option>
+                <option [value]="currencyResponse.currencyCode" *ngFor="let currencyResponse of currencyResponses">{{currencyResponse.currencyName}}</option>
+              </select>
+            <small class="form-text  "
+              *ngIf="updateForm.controls.currency.touched && updateForm.controls.currency.errors?.required">
+              Please enter Currency.!
+            </small>
+          </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputfax">Fax</label>
+          <input type="text" class="form-control" formControlName="fax" placeholder="Enter Fax" >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.fax.touched && updateForm.controls.fax.errors?.required">
+            Please enter fax.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcategory">Category</label>
+          <select  class="form-control" formControlName="category">
+            <option value="" disabled>Please Select Category</option>
+            <option value="L"> Saudi Arabia</option>
+            <option value="F"> Others</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.category.touched && updateForm.controls.category.errors?.required">
+            Please enter category.!
+          </small>
+        </div>
+        <!-- <div class="form-group col-md-4">
+          <label for="exampleInputcontact">Contact<span class="required">*</span></label>
+          <select class="form-control" formControlName="contact">
+            <option value="" disabled>Please Select Contact</option>
+            <option [value]="contactResponse.conCode" *ngFor="let contactResponse of contactResponses">{{contactResponse.conName}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.contact.touched && updateForm.controls.contact.errors?.required">
+            Please enter contact.!
+          </small>
+        </div> -->
+        <div class="form-group col-md-4">
+          <label for="exampleInputstatus" style="width: 100px">Status</label>
+          <label class="switch" style="width: 100px">
+            <input type="checkbox"  class="form-control" formControlName="status">
+            <span class="slider round"></span>
+          </label>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.status.touched && updateForm.controls.status.errors?.required">
+            Please enter status.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcuspayTerms">Pay Terms<span class="required">*</span></label>
+          <select  class="form-control" formControlName="payTerms">
+            <option value="" disabled>Please Select PayTerms</option>
+            <option [value]="payTermsResponse.payTermCode" *ngFor="let payTermsResponse of payTermsResponses">{{payTermsResponse.payTermDesc}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.payTerms.touched && updateForm.controls.payTerms.errors?.required">
+            Please enter payTerms.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvendorID">Vendor ID</label>
+          <input type="text" class="form-control" formControlName="vendorID" placeholder="Enter Vendor ID" >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.vendorID.touched && updateForm.controls.vendorID.errors?.required">
+            Please enter vendorID.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputcustomerPostingGlAcct">Customer PostingGlAcct<span class="required">*</span></label>
+          <select  class="form-control" formControlName="customerPostingGlAcct">
+            <option value="" disabled>Please Select PostingGlAcct</option>
+            <option [value]="customerPostingGlAcctResponse.entryNo" *ngFor="let customerPostingGlAcctResponse of customerPostingGlAcctResponses">{{customerPostingGlAcctResponse.postingCode}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.customerPostingGlAcct.touched && updateForm.controls.customerPostingGlAcct.errors?.required">
+            Please enter customerPostingGlAcct.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvatPostingGlAcct">Vat PostingGlAcct</label>
+          <input type="text" class="form-control" formControlName="vatPostingGlAcct" placeholder="Enter VatPostingGlAcct" >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.vatPostingGlAcct.touched && updateForm.controls.vatPostingGlAcct.errors?.required">
+            Please enter vatPostingGlAcct.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputtaxCode">Tax Code<span class="required">*</span></label>
+          <select  class="form-control" formControlName="taxCode">
+            <option value="" disabled>Please Select Tax Code</option>
+            <option [value]="taxCodeResponse.taxCode" *ngFor="let taxCodeResponse of taxCodeResponses">{{taxCodeResponse.taxDescription}}</option>
+         </select>
+          <small class="form-text  "
+            *ngIf="updateForm.controls.taxCode.touched && updateForm.controls.taxCode.errors?.required">
+            Please enter taxCode.!
+          </small>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="exampleInputvaTid">Vat Id</label>
+          <input type="text" class="form-control" formControlName="vaTid" placeholder="Enter Vat Id" >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.vaTid.touched && updateForm.controls.vaTid.errors?.required">
+            Please enter vaTid.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputcusName_Arabic">Customer Name Arabic</label>
+          <input type="text" class="form-control" formControlName="cusName_Arabic" placeholder="أدخل اسم العميل باللغة العربية"  >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.cusName_Arabic.touched && updateForm.controls.cusName_Arabic.errors?.required">
+            Please enter cusName_Arabic.!
+          </small>
+        </div>
+        <div class="form-group col-md-8">
+          <label for="exampleInputaddress1_Arabic">Address Arabic</label>
+          <input type="text" class="form-control" formControlName="address1_Arabic" placeholder="أدخل العنوان باللغة العربية"  >
+          <small class="form-text  "
+            *ngIf="updateForm.controls.address1_Arabic.touched && updateForm.controls.address1_Arabic.errors?.required">
+            Please enter address1_Arabic.!
+          </small>
+        </div >
+        <div class="form-group col-md-8"> 
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-top:25px;margin-right:8px">Close</button>
+          <button type="submit" class="btn btn-primary regbtn" [disabled]="!updateForm.valid"  style="margin-top:25px">Save Changes</button>
+        </div>
+       
+        </form>
+          </div>
+          </div>
+          </div>
+          </div>
+          <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="timer">
+          <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+         <!-- <ngx-spinner>Loading....</ngx-spinner> -->
+         <!-- <mat-progress-bar mode="indeterminate" ></mat-progress-bar> -->
+         <!-- <mat-spinner ></mat-spinner> -->
+         

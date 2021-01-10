@@ -1,0 +1,52 @@
+<h4 class="text-center">Registration </h4>
+
+<div class="container">
+  <div class="card"> 
+	<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" novalidate>
+		<div class="form-group">
+			<label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" formControlName="email" placeholder="Enter email">
+      <small class="form-text   " 
+        *ngIf="registrationForm.controls.email.touched && registrationForm.controls.email.errors?.required">
+          Please enter email address.!
+      </small>
+
+      <small class="form-text  "
+      *ngIf="registrationForm.controls.email.touched && registrationForm.controls.email.errors?.email">
+        Email address not well formed.!
+      </small>
+    </div>
+    <div class="form-group">
+			<label for="Username">Username</label>
+      <input type="text" class="form-control" formControlName="userName" placeholder="Enter Username">
+      <small class="form-text  " 
+        *ngIf="registrationForm.controls.userName.touched && registrationForm.controls.userName.errors?.required">
+          Please enter User Name..!
+      </small>
+
+    </div>
+    <div class="form-group">
+			<label for="exampleInputEmpId">Emp Id</label>
+      <input type="text" class="form-control" formControlName="empId" placeholder="Enter Emp Id">
+      <small class="form-text  " 
+        *ngIf="registrationForm.controls.empId.touched && registrationForm.controls.empId.errors?.required">
+          Please enter Emp Id.!
+      </small>
+    </div>
+    
+    
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" formControlName="password" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary regbtn" [disabled]="!registrationForm.valid">Register</button>
+    
+  </form>
+<div class="regbdr">
+  <span>
+    Already have an account?
+  </span>
+  <button class="btn btn-primary" [routerLink]="'/'">Sign In</button>
+</div>
+</div>
+</div>

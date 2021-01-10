@@ -1,0 +1,66 @@
+<!-- <div class="container" style="background-color: #F7F8E7;"> -->
+
+<mat-tab-group>
+    <mat-tab label="General Information">
+        <mat-accordion multi>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="disable_ripple">
+                    <mat-panel-title>
+                        Basic Information
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-label bold>Employee Name:</mat-label>
+                {{data?.empName}}<br>
+                <mat-label bold>Emp Id:</mat-label>
+                {{data?.empID}}<br>
+                <mat-label bold>E-Mail ID:</mat-label>
+                {{data?.eMailID}}
+            </mat-expansion-panel>
+        </mat-accordion>
+        <mat-accordion multi>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="disable_ripple">
+                    <mat-panel-title>
+                        Work
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-label bold>Department Name:</mat-label>
+                {{data?.dept.deptName}}<br>
+                <mat-label bold>Designation:</mat-label>
+                {{data?.designation}}<br>
+                <mat-label bold>Active:</mat-label>
+                {{data?.active}}<br>
+                <mat-label bold>DOJ:</mat-label>
+                {{data?.doj | date: 'dd/MM/yyy'}}<br>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <mat-accordion multi>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header class="disable_ripple">
+                    <mat-panel-title>
+                        Personal Details
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-label bold>Gender:</mat-label>
+                {{data?.sex}}<br>
+                <mat-label bold>Marital Status:</mat-label>
+                {{data?.maritalStatus}}<br>
+                <mat-label bold>Blood Group:</mat-label>
+                {{data?.bloodGroup}}<br>
+                <mat-label bold>DOB:</mat-label>
+                {{data?.dob | date: 'dd/MM/yyy'}}<br>
+                <mat-label bold>Passport No:</mat-label>
+                {{data?.passportNo}}<br>
+                <mat-label bold>Passport Expiry:</mat-label>
+                {{data?.passportExpiry | date: 'dd/MM/yyy'}}<br>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-tab>
+    <mat-tab label="Leave">Coming soon....</mat-tab>
+    <mat-tab label="Timesheet">Coming soon....</mat-tab>
+    <mat-tab label="Document">Coming soon....</mat-tab>
+</mat-tab-group>
+<!-- <h3>Employee Profile Details</h3> -->
+
+<!-- </div> -->

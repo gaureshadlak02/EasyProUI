@@ -1,0 +1,573 @@
+<h3 class="heading">Bank Master List</h3>
+<div class="marginbound"> 
+     <div class="row heading">
+      <div class="col-md-8">  
+    <button type="button" class="btn btn-primary space" (click)="addBank()" >
+      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      Add Bank</button>
+    <button class="btn btn-success succes" (click)="exportTable()"> 
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+      Export To Excel</button>
+      </div>
+      <div class="col-md-4">  
+    <div  class="form-group form-group-1 has-feedback has-search">
+      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+      <input class="searchbox" placeholder="Search" type="text" class="form-control"
+        (keyup)="applyFilter($event.target.value)">
+    </div>
+    </div>
+  </div> 
+  <mat-card>
+    <div class="table-responsive">
+    <table id="BankTable" class="table table-bordered" mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cB_CODE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+        <td mat-cell *matCellDef="let element"> {{element.cB_CODE}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cB_GLCODE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Gl Code </th>
+        <td mat-cell *matCellDef="let element"> {{element.cB_GLCODE}} </td>
+        <!-- <td mat-cell *matCellDef="let element" > {{element.cB_GLCODE.glName}} </td> -->
+      </ng-container>
+      <ng-container matColumnDef="cB_BANKNAME">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Bank Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.cB_BANKNAME}} </td>
+      </ng-container>
+      <ng-container matColumnDef="bankNameArabic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name Arabic</th>
+        <td mat-cell *matCellDef="let element"> {{element.bankNameArabic}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cB_ACCOUNTNO">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Account No </th>
+        <td mat-cell *matCellDef="let element" > {{element.cB_ACCOUNTNO}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cB_ADDRESS1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
+        <td mat-cell *matCellDef="let element">{{element.cB_ADDRESS1}} </td>
+      </ng-container>
+      <ng-container matColumnDef="bankAddressArabic">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Address Arabic </th>
+        <td mat-cell *matCellDef="let element"> {{element.bankAddressArabic}} </td>
+      </ng-container>
+      <ng-container matColumnDef="cB_TELEPHONE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Telephone </th>
+        <td mat-cell *matCellDef="let element"> {{element.cB_TELEPHONE}} </td>
+      </ng-container>
+      <ng-container matColumnDef="CreatedBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element"> {{element.CreatedBy}} </td>
+      </ng-container>
+      <ng-container matColumnDef="CreatedDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.CreatedDate | date: 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Update">
+        <th mat-header-cell *matHeaderCellDef ></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary"  matTooltip="Edit" (click)="editCustomer(element.id)">
+            <i class="fa fa-edit"></i>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Delete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="warn"  matTooltip="Delete" (click)="deleteBank(element.id)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30 ,100,dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+</div>
+<!-- AddForm Model Pop-Up -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true" style="visibility: hidden;" #addModal data-target="#addModal">
+</button>
+
+<div class="modal " id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered addmodalwidth" role="document">
+    <div class="modal-content contentwidth">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"> Add Bank Details</h5>
+        <button type="button" class="close" #closeaddModal data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <label> <span class="required">*</span> Mandatory Field</label>
+      <div class="modal-body">
+        <div class="row">
+        <form [formGroup]="bankAddForm" (ngSubmit)="onADD()" novalidate>
+          <!-- <div class="form-group col-md-4">
+            <label for="exampleInputcB_CODE">Bank Code <span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_CODE" placeholder="Enter Bank Code">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_CODE.touched && bankAddForm.controls.cB_CODE.errors?.required">
+              Please enter cusCode.
+            </small>
+          </div> -->
+          <div class="form-group col-md-4">
+            <mat-form-field>
+              <mat-label>Bank Code<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_CODE" id="cB_CODE">
+              <mat-error *ngIf="hasError('cB_CODE', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_GLCODE">Gl Name<span class="required">*</span></label>
+            <select class="form-control" formControlName="cB_GLCODE">
+              <option value="" disabled>Please Select GL Name</option>
+              <option [value]="glCodeResponse.glCode" *ngFor="let glCodeResponse of glCodeResponses">
+                {{glCodeResponse.glName}}</option>
+            </select>
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_GLCODE.touched && bankAddForm.controls.cB_GLCODE.errors?.required">
+              Please select GL Name.
+            </small> -->
+            <mat-form-field appearance="fill">
+              <mat-label>Please Select GL Name</mat-label>
+              <mat-select formControlName="cB_GLCODE" required>
+              <mat-option *ngFor="let glCodeResponse of glCodeResponses" [value]="glCodeResponse.glCode">
+                  {{glCodeResponse.glName}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="bankAddForm.controls.cB_GLCODE.hasError('required')"></mat-error>
+              <mat-hint>{{bankAddForm.controls.cB_GLCODE.value?.sound}}</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_BANKNAME">Name<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_BANKNAME" placeholder="Enter bank name">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_BANKNAME.touched && bankAddForm.controls.cB_BANKNAME.errors?.required">
+              Please enter bank name.!
+            </small> -->
+            
+              <mat-form-field>
+                <mat-label>Name<span class="required">*</span></mat-label>
+                <textarea matInput rows="5" cols="50"  formControlName="cB_BANKNAME" id="cB_BANKNAME" ></textarea>
+                <mat-error *ngIf="hasError('cB_BANKNAME', 'required')"></mat-error>
+              </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+           <!-- <label for="exampleInputbankNameArabic">Bank Name Arabic</label>
+            <input type="text" class="form-control" formControlName="bankNameArabic"
+              placeholder="أدخل اسم البنك باللغة العربية">
+             <small class="form-text  "
+              *ngIf="bankAddForm.controls.bankNameArabic.touched && bankAddForm.controls.bankNameArabic.errors?.required">
+              Please enter Bank Name Arabic.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Name Arabic</mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="bankNameArabic" id="bankNameArabic" placeholder="أدخل اسم البنك باللغة العربية" ></textarea>
+              <mat-error *ngIf="hasError('bankNameArabic', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_ACCOUNTNO">Bank Account Number<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_ACCOUNTNO"
+              placeholder="Enter Bank Account Number">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_ACCOUNTNO.touched && bankAddForm.controls.cB_ACCOUNTNO.errors?.required">
+              Please enter Bank Account Number.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Account Number<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_ACCOUNTNO" id="cB_ACCOUNTNO">
+              <mat-error *ngIf="hasError('cB_ACCOUNTNO', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_SWIFT">Bank Swift<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_SWIFT" placeholder="Enter Bank Swift">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_SWIFT.touched && bankAddForm.controls.cB_SWIFT.errors?.required">
+              Please enter Bank Swift.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Swift<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_SWIFT" id="cB_SWIFT">
+              <mat-error *ngIf="hasError('cB_SWIFT', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_IBAN">Bank IBAN<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_IBAN" placeholder="Enter Bank IBAN">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_IBAN.touched && bankAddForm.controls.cB_IBAN.errors?.required">
+              Please enter Bank IBAN.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank IBAN<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_IBAN" id="cB_IBAN">
+              <mat-error *ngIf="hasError('cB_IBAN', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_YEAR">Bank Year<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_YEAR" placeholder="Enter Bank Year">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_YEAR.touched && bankAddForm.controls.cB_YEAR.errors?.required">
+              Please enter Bank Year.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Year<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_YEAR" id="cB_YEAR">
+              <mat-error *ngIf="hasError('cB_YEAR', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_MONTH">Bank Month<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_MONTH" placeholder="Enter Bank Month">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_MONTH.touched && bankAddForm.controls.cB_MONTH.errors?.required">
+              Please enter Bank Month.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Month<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_MONTH" id="cB_MONTH">
+              <mat-error *ngIf="hasError('cB_MONTH', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_OPBAL">Bank Opbal<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_OPBAL" placeholder="Enter Bank Opbal">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_OPBAL.touched && bankAddForm.controls.cB_OPBAL.errors?.required">
+              Please enter Bank Opbal.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Opbal<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_OPBAL" id="cB_OPBAL">
+              <mat-error *ngIf="hasError('cB_OPBAL', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_ADDRESS1" style="width: 100px">Bank Address<span
+                class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_ADDRESS1" placeholder="Bank Address">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_ADDRESS1.touched && bankAddForm.controls.cB_ADDRESS1.errors?.required">
+              Please click Bank Address.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Address<span class="required">*</span></mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="cB_ADDRESS1" id="cB_ADDRESS1" ></textarea>
+              <!-- <input type="text" matInput  formControlName="cB_ADDRESS1" id="cB_ADDRESS1"> -->
+              <mat-error *ngIf="hasError('cB_ADDRESS1', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputbankAddressArabic">Bank Address Arabic</label>
+            <input type="text" class="form-control" formControlName="bankAddressArabic"
+              placeholder="عنوان البنك بالعربية">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.bankAddressArabic.touched && bankAddForm.controls.bankAddressArabic.errors?.required">
+              Please enter Bank Address Arabic.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Address Arabic</mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="bankAddressArabic" id="bankAddressArabic" placeholder="أدخل اسم البنك باللغة العربية" ></textarea>
+              <!-- <input type="text" matInput  formControlName="bankAddressArabic" id="bankAddressArabic" placeholder="أدخل اسم البنك باللغة العربية"> -->
+              <mat-error *ngIf="hasError('bankAddressArabic', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_TELEPHONE">Telephone</label>
+            <input type="text" class="form-control" formControlName="cB_TELEPHONE" placeholder="Enter  Telephone">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_TELEPHONE.touched && bankAddForm.controls.cB_TELEPHONE.errors?.required">
+              Please enter Telephone.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Telephone</mat-label>
+              <input type="text" matInput  formControlName="cB_TELEPHONE" id="cB_TELEPHONE" >
+              <mat-error *ngIf="hasError('cB_TELEPHONE', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_FAX">Fax</label>
+            <input type="text" class="form-control" formControlName="cB_FAX" placeholder="Enter Fax">
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.cB_FAX.touched && bankAddForm.controls.cB_FAX.errors?.required">
+              Please enter Fax.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Fax</mat-label>
+              <input type="text" matInput  formControlName="cB_FAX" id="cB_FAX" >
+              <mat-error *ngIf="hasError('cB_FAX', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <mat-label>Post Flg</mat-label>
+            <label class="switch" style="width: 100px">
+              <input type="checkbox" class="form-control" formControlName="postFlg" />
+              <span class="slider round"></span>
+            </label>
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.postFlg.touched && bankAddForm.controls.postFlg.errors?.required">
+              Please enter Post Flg.!
+            </small>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group col-md-4">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                  style="margin-top:25px;margin-right:8px">Close</button>
+                <button type="submit" class="btn btn-primary regbtn" [disabled]="!bankAddForm.valid"
+                  style="margin-top:25px;">Save</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- updateForm  Model Pop-Up-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"
+  style="visibility: hidden;" #updateModal data-target="#updateModal">
+</button>
+<!-- Modal -->
+<div class="modal " id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered updatemodalwidth" role="document">
+    <div class="modal-content contentwidth">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Bank Details</h5>
+        <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <label> <span class="required">*</span> Mandatory Field</label>
+      <div class="modal-body">
+        <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" novalidate>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_GLCODE">Gl Name <span class="required">*</span></label>
+            <select class="form-control" formControlName="cB_GLCODE">
+              <option value="" disabled>Please Select GL Name</option>
+              <option [value]="glCodeResponse.glCode" *ngFor="let glCodeResponse of glCodeResponses">
+                {{glCodeResponse.glName}}</option>
+            </select>
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_GLCODE.touched && updateForm.controls.cB_GLCODE.errors?.required">
+              Please select GL Name.
+            </small> -->
+            <mat-form-field appearance="fill">
+              <mat-label>Please Select GL Name</mat-label>
+              <mat-select formControlName="cB_GLCODE" required>
+              <mat-option *ngFor="let glCodeResponse of glCodeResponses" [value]="glCodeResponse.glCode">
+                  {{glCodeResponse.glName}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="bankAddForm.controls.cB_GLCODE.hasError('required')"></mat-error>
+              <mat-hint>{{bankAddForm.controls.cB_GLCODE.value?.sound}}</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_BANKNAME">Name<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_BANKNAME" placeholder="Enter bank name">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_BANKNAME.touched && updateForm.controls.cB_BANKNAME.errors?.required">
+              Please enter bank name.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Name<span class="required">*</span></mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="cB_BANKNAME" id="cB_BANKNAME" ></textarea>
+              <mat-error *ngIf="hasError('cB_BANKNAME', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputbankNameArabic">Bank Name Arabic</label>
+            <input type="text" class="form-control" formControlName="bankNameArabic"
+              placeholder="أدخل اسم البنك باللغة العربية">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.bankNameArabic.touched && updateForm.controls.bankNameArabic.errors?.required">
+              Please enter Bank Name Arabic.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Name Arabic</mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="bankNameArabic" id="bankNameArabic" placeholder="أدخل اسم البنك باللغة العربية" ></textarea>
+              <mat-error *ngIf="hasError('bankNameArabic', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_ACCOUNTNO">Bank Account Number<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_ACCOUNTNO"
+              placeholder="Enter Bank Account Number">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_ACCOUNTNO.touched && updateForm.controls.cB_ACCOUNTNO.errors?.required">
+              Please enter Bank Account Number.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Account Number<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_ACCOUNTNO" id="cB_ACCOUNTNO">
+              <mat-error *ngIf="hasError('cB_ACCOUNTNO', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_SWIFT">Bank Swift<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_SWIFT" placeholder="Enter Bank Swift">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_SWIFT.touched && updateForm.controls.cB_SWIFT.errors?.required">
+              Please enter Bank Swift.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Swift<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_SWIFT" id="cB_SWIFT">
+              <mat-error *ngIf="hasError('cB_SWIFT', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_IBAN">Bank IBAN<span class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_IBAN" placeholder="Enter Bank IBAN">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_IBAN.touched && updateForm.controls.cB_IBAN.errors?.required">
+              Please enter Bank IBAN.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank IBAN<span class="required">*</span></mat-label>
+              <input type="text" matInput  formControlName="cB_IBAN" id="cB_IBAN">
+              <mat-error *ngIf="hasError('cB_IBAN', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_YEAR">Bank Year<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_YEAR" placeholder="Enter Bank Year">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_YEAR.touched && updateForm.controls.cB_YEAR.errors?.required">
+              Please enter Bank Year.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Year<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_YEAR" id="cB_YEAR">
+              <mat-error *ngIf="hasError('cB_YEAR', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_MONTH">Bank Month<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_MONTH" placeholder="Enter Bank Month">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_MONTH.touched && updateForm.controls.cB_MONTH.errors?.required">
+              Please enter Bank Month.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Month<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_MONTH" id="cB_MONTH">
+              <mat-error *ngIf="hasError('cB_MONTH', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_OPBAL">Bank Opbal<span class="required">*</span></label>
+            <input type="number" class="form-control" formControlName="cB_OPBAL" placeholder="Enter Bank Opbal">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_OPBAL.touched && updateForm.controls.cB_OPBAL.errors?.required">
+              Please enter Bank Opbal.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Opbal<span class="required">*</span></mat-label>
+              <input type="number" matInput  formControlName="cB_OPBAL" id="cB_OPBAL">
+              <mat-error *ngIf="hasError('cB_OPBAL', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_ADDRESS1" style="width: 100px">Bank Address<span
+                class="required">*</span></label>
+            <input type="text" class="form-control" formControlName="cB_ADDRESS1" placeholder="Bank Address">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_ADDRESS1.touched && updateForm.controls.cB_ADDRESS1.errors?.required">
+              Please click Bank Address.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Address<span class="required">*</span></mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="cB_ADDRESS1" id="cB_ADDRESS1" ></textarea>
+              <!-- <input type="text" matInput  formControlName="cB_ADDRESS1" id="cB_ADDRESS1"> -->
+              <mat-error *ngIf="hasError('cB_ADDRESS1', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputbankAddressArabic">Bank Address Arabic</label>
+            <input type="text" class="form-control" formControlName="bankAddressArabic"
+              placeholder="عنوان البنك بالعربية">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.bankAddressArabic.touched && updateForm.controls.bankAddressArabic.errors?.required">
+              Please enter Bank Address Arabic.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Bank Address Arabic</mat-label>
+              <textarea matInput rows="5" cols="50"  formControlName="bankAddressArabic" id="bankAddressArabic" placeholder="أدخل اسم البنك باللغة العربية" ></textarea>
+              <!-- <input type="text" matInput  formControlName="bankAddressArabic" id="bankAddressArabic" placeholder="أدخل اسم البنك باللغة العربية"> -->
+              <mat-error *ngIf="hasError('bankAddressArabic', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_TELEPHONE">Telephone</label>
+            <input type="text" class="form-control" formControlName="cB_TELEPHONE" placeholder="Enter  Telephone">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_TELEPHONE.touched && updateForm.controls.cB_TELEPHONE.errors?.required">
+              Please enter Telephone.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Telephone</mat-label>
+              <input type="text" matInput  formControlName="cB_TELEPHONE" id="cB_TELEPHONE" >
+              <mat-error *ngIf="hasError('cB_TELEPHONE', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputcB_FAX">Fax</label>
+            <input type="text" class="form-control" formControlName="cB_FAX" placeholder="Enter Fax">
+            <small class="form-text  "
+              *ngIf="updateForm.controls.cB_FAX.touched && updateForm.controls.cB_FAX.errors?.required">
+              Please enter Fax.!
+            </small> -->
+            <mat-form-field>
+              <mat-label>Fax</mat-label>
+              <input type="text" matInput  formControlName="cB_FAX" id="cB_FAX" >
+              <mat-error *ngIf="hasError('cB_FAX', 'required')"></mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group col-md-4">
+            <!-- <label for="exampleInputpostFlg">Post Flg</label>
+            <label class="switch" style="width: 100px">
+              <input type="checkbox" class="form-control" formControlName="postFlg" />
+              <span class="slider round"></span>
+            </label>
+            <small class="form-text  "
+              *ngIf="updateForm.controls.postFlg.touched && updateForm.controls.postFlg.errors?.required">
+              Please enter Post Flg.!
+            </small> -->
+            <mat-label>Post Flg</mat-label>
+            <label class="switch" style="width: 100px">
+              <input type="checkbox" class="form-control" formControlName="postFlg" />
+              <span class="slider round"></span>
+            </label>
+            <small class="form-text  "
+              *ngIf="bankAddForm.controls.postFlg.touched && bankAddForm.controls.postFlg.errors?.required">
+              Please enter Post Flg.!
+            </small>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group col-md-4">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+              style="margin-top:25px;margin-right:8px">Close</button>
+            <button type="submit" class="btn btn-primary regbtn" [disabled]="!updateForm.valid"
+              style="margin-top:25px">Save Changes</button>
+          </div>
+           </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

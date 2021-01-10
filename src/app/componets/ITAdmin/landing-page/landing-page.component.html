@@ -1,0 +1,50 @@
+
+  <mat-drawer-container class="example-container"  [hasBackdrop]="false">
+    <mat-drawer #drawer class="example-sidenav handover" mode="side">
+      <img src="../../../assets/logo.png" width="100%">
+      <mat-list role="list"  >
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active " [routerLink]="'/home'"><i  class="fa fa-home icon" aria-hidden="true"></i>Home</mat-list-item> 
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active " [routerLink]="'/home/ticket-details'"><i  class="fa fa-ticket icon" aria-hidden="true"></i>Ticket Details</mat-list-item> 
+        <mat-list-item role="listitem" *ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/users'"><i  class="fa fa-users icon" aria-hidden="true"></i>Users</mat-list-item> 
+        <mat-list-item role="listitem" *ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/employee-master-details'"><i  class="fa fa-group icon" aria-hidden="true"></i>Employee Master Details</mat-list-item>
+        <mat-list-item role="listitem" *ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/customer-master-details'"><i  class="fa fa-users icon" aria-hidden="true"></i>Customer Master Details</mat-list-item>
+        <mat-list-item role="listitem" *ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/bank-master-details'"><i  class="glyphicon glyphicon-piggy-bank icon" aria-hidden="true"></i>Bank Master Details</mat-list-item>
+        <mat-list-item role="listitem" *ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/reports'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>Employee Reports</mat-list-item>
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"  [routerLink]="'/home/po-list'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>Purchase Order List</mat-list-item>
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"  [routerLink]="'/home/rfq-list'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>RFQ List</mat-list-item>
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"  [routerLink]="'/home/pr-list'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>PR List</mat-list-item>
+        <mat-list-item role="listitem" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active"  [routerLink]="'/home/sales-invoice-list'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>Sales Invoice List</mat-list-item>
+        <!-- <button class="mat-list-item" mat-button [matMenuTriggerFor]="menu" role="listitem"*ngIf="isAdmin" routerLinkActive="active" [routerLink]="'/home/reports'"><i  class="glyphicon glyphicon-book icon" aria-hidden="true"></i>Reports</button>
+         <mat-menu #menu="matMenu"> 
+         <button mat-menu-item>Item 1</button>
+         <button mat-menu-item>Item 2</button>
+        </mat-menu> -->
+      </mat-list>
+    </mat-drawer>
+    <div class="example-sidenav-content">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <li class="active"><a><i style="color:white" class="glyphicon glyphicon-align-justify" (click)="drawer.toggle()"></i></a></li>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-user icon"></span>{{userName}} <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a [routerLink]="'/home/user-profile'">Profile</a></li>
+                <li><a >Settings</a></li>
+                <li><a [routerLink]="'/home/change-password'" >Change Password</a></li>
+                <li><a ></a></li>
+              </ul>
+            </li>
+            <li><a (click)="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          </ul>
+        </div>
+      </nav>
+      <router-outlet></router-outlet>
+    </div>
+  
+  </mat-drawer-container>
+  
+
+ 

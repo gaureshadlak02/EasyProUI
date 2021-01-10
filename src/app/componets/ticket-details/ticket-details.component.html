@@ -1,0 +1,396 @@
+<h3 class="heading">Ticket list</h3>
+<div class="marginbound">
+<div class="row heading">
+    <div class="col-md-8"> 
+            <button type="button" class="btn btn-primary" (click)="addTicket()">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                Add Ticket</button> 
+        <button class="btn btn-success succes" (click)="exportTable()">
+            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+             Export To Excel</button>
+</div>
+            <div class="col-md-4">
+        <div class="form-group form-group-1 has-feedback has-search">
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            <input class="searchbox" placeholder="Search" type="text" class="form-control"
+                (keyup)="applyFilter($event.target.value)">
+        </div> 
+        </div>
+    </div>
+    <div class="row heading">  
+        <div class="col-md-2">
+        <mat-radio-group aria-label="Select an option" (change)="RadiofilterData($event)">
+            <mat-radio-button value="1" [checked]="true">Pending Task</mat-radio-button>
+            <mat-radio-button class="succes" value="2">My Ticket</mat-radio-button>
+          </mat-radio-group>
+        </div>  
+        <div class="col-md-2"> 
+            <!-- <label for="exampleInputlabel">Status</label>   --> 
+            <form [formGroup]="updateForm">
+                <select class="form-control" formControlName="filterstatus" (change)="filterData()">
+                    <option value="" disabled>Please Select Status</option>
+                    <option value="0">All</option>
+                    <option [value]="statusResponse.id" *ngFor="let statusResponse of statusResponses">
+                        {{statusResponse.status}}</option>
+                </select>
+            </form>  
+    </div>
+     </div>
+    <br/>
+    <mat-card>
+       <div class="row">
+            <div class="col-md-12"> 
+        <div class="table-responsive">
+        <table id="TicketTable"  class="table table-bordered" mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="ticketId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+                <td mat-cell *matCellDef="let element"> {{element.ticketId}} </td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="requestId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Request Id</th>
+                <td mat-cell *matCellDef="let element"> {{element.requestId}} </td>
+            </ng-container> -->
+            <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Subject </th>
+                <td mat-cell *matCellDef="let element"> {{element.subject}} </td>
+            </ng-container>
+            <ng-container matColumnDef="source">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Source</th>
+                <td mat-cell *matCellDef="let element"> {{element.sou.source}} </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.sta.status}} </td>
+            </ng-container>
+            <ng-container matColumnDef="priority">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+                <td mat-cell *matCellDef="let element"> {{element.pri.priority}} </td>
+            </ng-container>
+            <ng-container matColumnDef="department">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Department</th>
+                <td mat-cell *matCellDef="let element"> {{element.department}} </td>
+            </ng-container>
+            <ng-container matColumnDef="assignTo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Assign To</th>
+                <td mat-cell *matCellDef="let element"> {{element.ass.empName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+                <td mat-cell *matCellDef="let element"> {{element.cat.category}} </td>
+            </ng-container>
+            <ng-container matColumnDef="createdBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Created By</th>
+                <td mat-cell *matCellDef="let element"> {{element.cre.empName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+                <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'dd/MM/yyyy h:mm:ss a'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="Update">
+                <th mat-header-cell *matHeaderCellDef>Edit</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button color="primary" matTooltip="Edit" (click)="editCustomer(element.ticketId,element.assignTo,element.empId)">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="Delete">
+                <th mat-header-cell *matHeaderCellDef>Delete</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button color="warn"  matTooltip="Delete" (click)="deleteTicket(element.ticketId)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>
+    </div>
+        <mat-paginator [pageSizeOptions]="[10, 20, 30, 100, dataSource?.data?.length]" showFirstLastButtons>
+        </mat-paginator>
+    </mat-card>
+</div>
+<!-- AddForm Model Pop-Up -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"
+    style="visibility: hidden;" #addModal data-target="#addModal">
+</button>
+<div class="modal " id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered addmodalwidth" role="document">
+        <div class="modal-content contentwidth">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"> Add New Ticket </h5>
+                <button type="button" class="close" #closeaddModal data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+         <!-- <h5><span class="required">*</span> Mandatory Field</h5> -->
+            <!-- <div class="modal-body"> -->
+                <!-- <div class="row"> -->
+                <form [formGroup]="NewTicketForm" (ngSubmit)="onSubmit()" novalidate>
+                    <div class="form-group col-md-12">
+                        <label for="exampleInputsubject">Subject <span class="required">*</span></label>
+                        <input type="subject" class="form-control" formControlName="subject"
+                            placeholder="Enter Subject"> 
+                        <small class="form-text   "
+                            *ngIf="NewTicketForm.controls.subject.touched && NewTicketForm.controls.subject.errors?.required">
+                            Please enter Subject.!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-6">
+                        <label for="empId">Employee Name <span class="required">*</span></label>
+                        <select class="form-control form-control-4 " formControlName="empId">
+                            <option value="" disabled>Please Select Empolyee Name</option>
+                            <option [value]="EmployeeResponse.empID" *ngFor="let EmployeeResponse of EmployeeResponses">
+                                {{EmployeeResponse.empName}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.empId.touched && NewTicketForm.controls.empId.errors?.required">
+                            Please Select Empolyee Name.!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="source">Source</label>
+                        <select class="form-control form-control-4" formControlName="source">
+                            <option value="" disabled>Please Select Source</option>
+                            <option [value]="sourceResponse.id" *ngFor="let sourceResponse of sourceResponses">
+                                {{sourceResponse.source}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.source.touched && NewTicketForm.controls.source.errors?.required">
+                            Please Select Source..!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-6">
+                        <label for="priority">Priority <span class="required">*</span></label>
+                        <select class="form-control form-control-4" formControlName="priority">
+                            <option value="" disabled>Please Select Priority</option>
+                            <option [value]="priorityResponse.id" *ngFor="let priorityResponse of priorityResponses">
+                                {{priorityResponse.priority}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.priority.touched && NewTicketForm.controls.priority.errors?.required">
+                            Please Select Priority..!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="department">Department <span class="required">*</span></label>
+                        <select class="form-control form-control-4" formControlName="department" (change)="ondepartmentChange()">
+                            <option value="" disabled>Please Select Department</option>
+                            <option [value]="departmentResponse.deptCode"
+                                *ngFor="let departmentResponse of departmentResponses">
+                                {{departmentResponse.deptName}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.department.touched && NewTicketForm.controls.department.errors?.required">
+                            Please Select Department..!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="assignTo">Assign To <span class="required">*</span></label>
+                        <select class="form-control form-control-4" formControlName="assignTo">
+                            <option value="" disabled>Please Select Assign To</option>
+                            <option [value]="EmployeeResponse.empID" *ngFor="let EmployeeResponse of employee">
+                                {{EmployeeResponse.empName}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.assignTo.touched && NewTicketForm.controls.assignTo.errors?.required">
+                            Please Select Assign To..!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="category">Category</label>
+                        <select class="form-control form-control-4" formControlName="category">
+                            <option value="" disabled>Please Select Category</option>
+                            <option [value]="categoryResponse.id" *ngFor="let categoryResponse of categoryResponses">
+                                {{categoryResponse.category}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.category.touched && NewTicketForm.controls.category.errors?.required">
+                            Please Select Category..!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="exampleInputdescription">Description</label>
+                        <textarea rows="5" cols="50" type="description" class="form-control"
+                            formControlName="description" placeholder="Enter Description"></textarea>
+                        <small class="form-text  "
+                            *ngIf="NewTicketForm.controls.description.touched && NewTicketForm.controls.description.errors?.required">
+                            Please enter Description.!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Attachafile">Attach a file</label>
+                        <input type="file" #fileInput placeholder="Upload file..." (change)="selectFile($event)" />
+                    </div> 
+                    <div class="form-group col-md-8">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            style="margin-top:25px;margin-right:8px">Close</button>
+                        <button type="submit" class="btn btn-primary regbtn" style="margin-top:25px"
+                            [disabled]="!NewTicketForm.valid">Create Ticket</button>
+                    </div>
+                </form>
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+<!-- updateForm  Model Pop-Up-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"
+    style="visibility: hidden;" #updateModal data-target="#updateModal">
+</button>
+<!-- Modal -->
+<div class="modal " id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered updatemodalwidth" role="document">
+        <div class="modal-content contentwidth">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Update Ticket Details</h5>
+                <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- <label> <span class="required">*</span> Mandatory Field</label> -->
+            <div class="modal-body">
+
+                <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" novalidate>
+                    <!-- <div class="form-group  col-md-4">
+                        <label for="exampleInputTicketId">Request Id </label>
+                        <input type="requestId" class="form-control" formControlName="requestId"
+                            placeholder="Enter Request Id" [readonly]="true">
+                        <small class="form-text   "
+                            *ngIf="updateForm.controls.requestId.touched && updateForm.controls.requestId.errors?.required">
+                            Please enter Request Id.!
+                        </small>
+                    </div> -->
+                    <div class="form-group  col-md-12">
+                        <label for="exampleInputsubject">Subject </label>
+                        <input type="subject" class="form-control" formControlName="subject" placeholder="Enter Subject"
+                            [readonly]="true">
+                        <small class="form-text   "
+                            *ngIf="updateForm.controls.subject.touched && updateForm.controls.subject.errors?.required">
+                            Please enter Subject.!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-4 ">
+                        <label for="exampleInputcusStatus">Status<span class="required">*</span></label>
+                        <select class="form-control" formControlName="status">
+                            <option value="" disabled>Please Select Status</option>
+                            <option [value]="statusResponse.id" *ngFor="let statusResponse of statusResponses">
+                                {{statusResponse.status}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="updateForm.controls.status.touched && updateForm.controls.status.errors?.required">
+                            Please Select Status..!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-4">
+                        <label for="exampleInputpriority">Priority </label>
+                        <select class="form-control" formControlName="priority">
+                            <option value="" disabled>Please Select Priority</option>
+                            <option [value]="priorityResponse.id" *ngFor="let priorityResponse of priorityResponses"
+                                disabled>
+                                {{priorityResponse.priority}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="updateForm.controls.priority.touched && updateForm.controls.priority.errors?.required">
+                            Please Select Priority..!
+                        </small>
+                    </div>
+                    <!-- <div class="form-group ">
+        <label for="exampleInputdepartment">Department <span class="required">*</span></label>
+        <select class="form-control" formControlName="department" (change)="ondepartmentChange()">
+            <option value="" disabled>Please Select Department</option>
+            <option [value]="departmentResponse.deptCode" *ngFor="let departmentResponse of departmentResponses">
+                {{departmentResponse.deptName}}</option>
+        </select>
+        <small class="form-text  "
+            *ngIf="updateForm.controls.department.touched && updateForm.controls.department.errors?.required">
+            Please Select Department..!
+        </small>
+    </div> -->
+                    <!-- <div class="form-group ">
+        <label for="exampleInputassignTo">Assign To <span class="required">*</span></label>
+        <select class="form-control" formControlName="assignTo">
+            <option value="" disabled>Please Select Assign To</option>
+            <option [value]="EmployeeResponse.empID" *ngFor="let EmployeeResponse of employee">
+                {{EmployeeResponse.empName}}</option>
+        </select>
+        <small class="form-text  "
+            *ngIf="updateForm.controls.assignTo.touched && updateForm.controls.assignTo.errors?.required">
+            Please Select Assign To..!
+        </small>
+    </div> -->
+
+                    <div class="form-group col-md-4">
+                        <label for="exampleInputcategory">Category</label>
+                        <select class="form-control" formControlName="category">
+                            <option value="" disabled>Please Select Category</option>
+                            <option [value]="categoryResponse.id" *ngFor="let categoryResponse of categoryResponses"
+                                disabled>
+                                {{categoryResponse.category}}</option>
+                        </select>
+                        <small class="form-text  "
+                            *ngIf="updateForm.controls.category.touched && updateForm.controls.category.errors?.required">
+                            Please Select Category..!
+                        </small>
+                    </div>
+                    <div class="form-group col-md-12 ">
+                        <label for="exampleInputdescription">Description</label>
+                        <textarea rows="5" cols="50" type="description" class="form-control"
+                            formControlName="description" placeholder="Enter Description" [readonly]="true"></textarea>
+                        <small class="form-text  "
+                            *ngIf="updateForm.controls.description.touched && updateForm.controls.description.errors?.required">
+                            Please enter Description.!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-12 ">
+                        <label for="exampleInputremark">Remark<span class="required">*</span></label>
+                        <textarea rows="5" cols="50" type="remark" class="form-control" formControlName="remark"
+                            placeholder="Enter remark"></textarea>
+                        <small class="form-text  "
+                            *ngIf="updateForm.controls.remark.touched && updateForm.controls.remark.errors?.required">
+                            Please enter remark.!
+                        </small>
+                    </div>
+                    <div class="form-group  col-md-10 " *ngIf="baseUrl">
+                        <a href="{{baseUrl}}" target="_blank">See Attachment</a>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            style="margin-top:25px;margin-right:8px">Close</button>
+                        <button type="submit" class="btn btn-primary regbtn" [disabled]="!updateForm.valid"
+                            style="margin-top:25px">Save Changes</button>
+                    </div>
+                    <div class="form-group col-md-12">
+                    <h4>Remark History</h4>
+                    <div *ngIf="remarkDetails.length>0"> 
+                        <div class="table-responsive">
+                        <table style="overflow-y: scroll;" class="table table-bordered-1"> 
+                            <th>S.No.</th>
+                            <th>Remark</th>
+                            <th>Status</th>
+                            <th>Remark By</th>
+                            <th>Date</th>
+                            <tr *ngFor="let item of remarkDetails ; let i =index">
+                                <td> {{i+1}} </td> 
+                                <td>{{item.remark}}</td>
+                                <td>{{item.sta.status}}</td>
+                                <td>{{item.las.empName}}</td>
+                                <td>{{item.lastModifiedDate | date: 'dd/MM/yyyy h:mm:ss a'}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+.regbtn
+{
+    width: 100%;
+}
+.card
+{
+    width: 400px;
+    margin: 0 auto;
+    border-radius: 2px;
+    border-color: gray;
+    background-color: gray;
+    padding: 24px;
+}
+.regbdr
+{
+    padding:10px;
+}
+.form-text{
+    color: red;
+    font-size: 15px;
+}

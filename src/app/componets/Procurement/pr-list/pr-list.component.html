@@ -1,0 +1,114 @@
+<h3 class="heading">PR List</h3>
+<div class="marginbound">
+  <div class="row heading">
+    <div class="col-md-8"> 
+    <button class="btn btn-success succes" (click)="exportTable()">
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+      Export To Excel</button>
+    </div>
+    <div class="col-md-4"> 
+    <div  class="form-group form-group-1 has-feedback has-search">
+      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+      <input class="searchbox" placeholder="Search" type="text" class="form-control"
+        (keyup)="applyFilter($event.target.value)">
+    </div>
+  </div>
+  </div>
+  <div class="row heading">  
+    <div class="col-md-2">
+    <mat-radio-group aria-label="Select an option" >
+        <mat-radio-button value="1" [checked]="true">All PR</mat-radio-button>
+        <mat-radio-button class="succes" value="2">My PR</mat-radio-button>
+      </mat-radio-group>
+     </div>   
+    <div class="col-md-2"> 
+      <form [formGroup]="updateForm">
+        <select class="form-control" formControlName="filterstatus" (change)="filterData()">
+            <option value="" disabled>Please Select Status</option>
+            <option value="All">All</option>
+            <option value={{statusResponse.poStatusCode}} *ngFor="let statusResponse of statusResponses">
+              {{statusResponse.poStatusDesc}}</option> 
+        </select>
+      </form>
+</div>
+ </div>
+<br/>
+  <mat-card>
+    <div class="table-responsive">
+        <table mat-table id="PRTable" class="table table-bordered hoverTable"  [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="prNo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>PR No</th>
+              <td mat-cell *matCellDef="let element"><a href="/home/purchase-order?PONo={{element.prNo}}" target="_blank">{{element.prNo}}</a></td>
+            </ng-container> 
+            <ng-container matColumnDef="amendmentNo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Rev. No</th>
+              <td mat-cell *matCellDef="let element">{{element.amendmentNo}}</td>
+            </ng-container> 
+            <ng-container matColumnDef="prProjectID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Project No</th>
+              <td mat-cell *matCellDef="let element">{{element.prProjectID}}</td>
+            </ng-container> 
+            <ng-container matColumnDef="prDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR Date</th>
+                <td mat-cell *matCellDef="let element">{{element.prDate | date: 'dd/MM/yyyy'}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="requiredDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Required Date</th>
+                <td mat-cell *matCellDef="let element">{{element.requiredDate| date: 'dd/MM/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="prTypeName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR Type</th>
+                <td mat-cell *matCellDef="let element">{{element.prTypeName}}</td>
+              </ng-container>
+              <ng-container matColumnDef="prNotes">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR Notes</th>
+                <td mat-cell *matCellDef="let element">{{element.prNotes}}</td>
+              </ng-container>
+              <ng-container matColumnDef="prStatusName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR Status</th>
+                <td mat-cell *matCellDef="let element">{{element.prStatusName}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="pRbyName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR By</th>
+                <td mat-cell *matCellDef="let element">{{element.pRbyName}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="prCurrency">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+                <td mat-cell *matCellDef="let element">{{element.prCurrency}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="warehouse">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Warehouse</th>
+                <td mat-cell *matCellDef="let element">{{element.warehouse}}</td>
+              </ng-container> 
+              
+              <ng-container matColumnDef="amendmentDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Amendment Date</th>
+                <td mat-cell *matCellDef="let element">{{element.amendmentDate | date: 'dd/MM/yyyy'}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="prApprovalDt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>PR Approval Date</th>
+                <td mat-cell *matCellDef="let element">{{element.prApprovalDt | date: 'dd/MM/yyyy h:mm:ss a'}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="createdBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Created By</th>
+                <td mat-cell *matCellDef="let element">{{element.createdBy}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="createdDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+                <td mat-cell *matCellDef="let element">{{element.createdDate | date: 'dd/MM/yyyy h:mm:ss a'}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="lastModifiedBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Modified By</th>
+                <td mat-cell *matCellDef="let element">{{element.lastModifiedBy}}</td>
+              </ng-container> 
+              <ng-container matColumnDef="lastModifiedDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Modified Date</th>
+                <td mat-cell *matCellDef="let element">{{element.lastModifiedDate | date: 'dd/MM/yyyy h:mm:ss a'}}</td>
+              </ng-container> 
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table> 
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 100, dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
+</mat-card>
+</div>

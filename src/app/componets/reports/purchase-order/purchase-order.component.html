@@ -1,0 +1,14 @@
+<h3 class="heading">Purchase Order Report</h3>
+<div >
+    <ssrs-reportviewer
+        [reportserver]="reportServer"
+        [reporturl]="reportUrl"
+        [showparameters]="showParameters" 
+        [parameters]=this.poNo
+        [language]="language" 
+        [width] ="width" 
+        [height]="height" 
+        [toolbar]="toolbar" >
+    </ssrs-reportviewer>
+</div>
+

@@ -1,0 +1,26 @@
+.example-sidenav{
+    background: #333;
+    height: 100vh !important;
+    width:300px;
+    position: fixed;
+}
+.active{
+    color:black !important;
+    background: #F7F8E7;
+    
+}
+.icon{
+    padding-right: 10px;
+}
+
+mat-list-item 
+{
+    color: #F7F8E7 !important;
+}
+.navbar {
+    margin-bottom: 0px;
+}
+.handover
+{
+    cursor: pointer;
+}

@@ -1,0 +1,74 @@
+<h3 class="heading">Employee Master List</h3>
+<div class="marginbound">
+  <div class="row heading">
+    <div class="col-md-8"> 
+    <button class="btn btn-success succes" (click)="exportTable()">
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+      Export To Excel</button>
+    </div>
+    <div class="col-md-4"> 
+    <div  class="form-group form-group-1 has-feedback has-search">
+      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+      <input class="searchbox" placeholder="Search" type="text" class="form-control"
+        (keyup)="applyFilter($event.target.value)">
+    </div>
+  </div>
+  </div>
+  <mat-card>
+    <div class="table-responsive">
+    <table id="EmployeeTable" class="table table-bordered" mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="empID" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.empID}} </td>
+      </ng-container>
+      <ng-container matColumnDef="empName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.empName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Designation </th>
+        <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+      </ng-container>
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header title="Department">Department </th>
+        <td mat-cell *matCellDef="let element"> {{element.department}} </td>
+      </ng-container>
+      <ng-container matColumnDef="payRollGroup">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PayRoll Group </th>
+        <td mat-cell *matCellDef="let element"> {{element.payRollGroup}} </td>
+      </ng-container>
+      <ng-container matColumnDef="jobPosition">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Job Position</th>
+        <td mat-cell *matCellDef="let element"> {{element.jobPosition}} </td>
+      </ng-container>
+      <ng-container matColumnDef="accessLevel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Access Level </th>
+        <td mat-cell *matCellDef="let element"> {{element.accessLevel}} </td>
+      </ng-container>
+      <ng-container matColumnDef="active">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Active </th>
+        <td mat-cell *matCellDef="let element"> {{element.active}} </td>
+      </ng-container>
+      <ng-container matColumnDef="sex">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sex </th>
+        <td mat-cell *matCellDef="let element"> {{element.sex}} </td>
+      </ng-container>
+      <ng-container matColumnDef="doj">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> DOJ </th>
+        <td mat-cell *matCellDef="let element"> {{element.doj | date: 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="resourceCenter">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource Center </th>
+        <td mat-cell *matCellDef="let element"> {{element.resourceCenter}} </td>
+      </ng-container>
+      <ng-container matColumnDef="passportNo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PassportNo </th>
+        <td mat-cell *matCellDef="let element"> {{element.passportNo}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 100, dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+</div>

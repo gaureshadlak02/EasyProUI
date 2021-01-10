@@ -1,0 +1,181 @@
+<h3 class="heading">User Details</h3>
+<div class="marginbound"> 
+<!-- <div class="container">
+    <h3>Employee Details</h3>
+    <div class="table-responsive">
+    <table class="table table-bordered-1">
+      <th>Sr No.</th>
+      <th>Emp Id </th>
+      <th> Email Id </th>
+      <th> User Name </th>
+      <th> Password</th>
+      <th>Edit</th>
+      <th>Delete</th>
+      <tr *ngFor="let res of respones ;let num = index">
+        <td>{{ num+1 }}</td>
+        <td>{{res.empId}}</td>
+        <td>{{res.emailId}}</td>
+        <td>{{res.userName}}</td>
+        <td class="hidetext">{{res.password}}</td>
+        <td><button mat-button color="primary" matTooltip="Edit" (click)="updateUser(res.id)"><i class="fa fa-edit"></i></button></td>
+        <td><button mat-button color="warn"  matTooltip="Delete" (click)="deleteUser(res.id)"><i class="fa fa-trash"></i></button></td>
+      </tr>
+    </table>
+  </div>
+  </div> -->
+  <div class="row heading">
+    <div class="col-md-8"> 
+    <button class="btn btn-success succes" (click)="exportTable()">
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+      Export To Excel</button>
+    </div>
+    <div class="col-md-4"> 
+    <div  class="has-feedback has-search">
+      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+      <input class="searchbox" placeholder="Search" type="text" class="form-control"
+        (keyup)="applyFilter($event.target.value)">
+    </div>
+  </div>
+  </div>
+  <br>
+  <mat-card>
+    <div class="table-responsive">
+    <table id="UserTable" class="table table-bordered" mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sr. No.</th>
+        <td mat-cell *matCellDef="let element ;let i = index"> {{i+1}} </td>
+      </ng-container>
+      <ng-container matColumnDef="empId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.empId}} </td>
+      </ng-container>
+      <ng-container matColumnDef="emailId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.emailId}} </td>
+      </ng-container>
+      <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="password">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Password</th>
+        <td mat-cell *matCellDef="let element" class="hidetext"> {{element.password}} </td>
+      </ng-container>
+      <ng-container matColumnDef="userType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> User Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.userType.description}} </td>
+      </ng-container>
+      <ng-container matColumnDef="isActive">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Active </th>
+        <td mat-cell *matCellDef="let element"> {{element.isActive}} </td>
+      </ng-container>
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+        <td mat-cell *matCellDef="let element">{{element.cre.empName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Update">
+        <th mat-header-cell *matHeaderCellDef>Edit</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary"  matTooltip="Edit" (click)="updateUser(element.id)">
+            <i class="fa fa-edit"></i>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Delete">
+        <th mat-header-cell *matHeaderCellDef>Delete</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="warn"  matTooltip="Delete" (click)="deleteUser(element.id)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30 ,100,dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
+  </mat-card>
+</div>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" aria-hidden="true" data-backdrop="false" style="visibility: hidden;"#updateModal
+    data-target="#exampleModalCenter">
+  </button>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Employee Details</h5>
+          <button type="button" class="close" #closeModal data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" novalidate>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email Address</label>
+              <input type="email" class="form-control" formControlName="email" placeholder="Enter email" readonly>
+              <small class="form-text  "
+                *ngIf="updateForm.controls.email.touched && updateForm.controls.email.errors?.required">
+                Please enter email address.!
+              </small>
+              <small class="form-text  "
+                *ngIf="updateForm.controls.email.touched && updateForm.controls.email.errors?.email">
+                Email address not well formed.!
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="Username">User Name</label>
+              <input type="text" class="form-control" formControlName="userName" placeholder="Enter Username">
+              <small class="form-text  "
+                *ngIf="updateForm.controls.userName.touched && updateForm.controls.userName.errors?.required">
+                Please enter User Name..!
+              </small>
+  
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmpId">Emp Id</label>
+              <input type="text" class="form-control" formControlName="empId" placeholder="Enter Emp Id">
+              <small class="form-text  "
+                *ngIf="updateForm.controls.empId.touched && updateForm.controls.empId.errors?.required">
+                Please enter Emp Id.!
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputIsActive">IsActive</label>
+              <label class="switch">
+                <input type="checkbox" formControlName="isActive">
+                <span class="slider round"></span>
+              </label>
+           </div>
+            <div class="form-group">
+              <label for="exampleInputIsActive">User Type</label>
+              <select class="form-control" formControlName="userTypeId" >
+                <option value="" disabled>Please Select User Type</option>
+                <option *ngFor="let res of userType" [value]="res.id">{{res.description}}</option>
+              </select>
+              <small class="form-text  "
+                *ngIf="updateForm.controls.userTypeId.touched && updateForm.controls.userTypeId.errors?.required">
+                Please enter User Type !
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input [type]="isTextFieldType ? 'text' : 'password'" class="form-control" formControlName="password"
+                placeholder="Password">
+              <span class="field-icon" (click)="togglePasswordFieldType()"><i [ngClass]="isTextFieldType ? 'fa fa-eye' : 'fa fa-eye-slash'"></i></span>
+            </div>
+            <div class="form-group">
+            <button type="button" class="btn btn-secondary space"  data-dismiss="modal" (click)="PasswordFieldType()">Close</button>
+            <button type="submit" class="btn btn-primary regbtn" [disabled]="!updateForm.valid" >Save Changes</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
