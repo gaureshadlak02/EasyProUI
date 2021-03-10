@@ -1,0 +1,373 @@
+<h3>Sales Invoice</h3>
+<div  class="form-group col-md-12" *ngIf="invoiceItems.length>0">
+<button type="button" class="btn btn-primary space" (click)="SaveInvoice()">
+  <i class="fa fa-plus-circle" aria-hidden="true"></i>
+  Save</button>
+</div>
+  <label> <span class="required">*</span> Mandatory Field</label>
+<div class="modal-body">
+  <form [formGroup]="invoiceAddForm" (ngSubmit)="onADD()" novalidate>
+    <div class="form-group col-md-4">
+      <mat-form-field color="accent" appearance="fill">
+        <mat-label>Invoice Date</mat-label>
+        <input matInput [matDatepicker]="picker" placeholder="DD/MMM/YYYY" required readonly formControlName="sI_DATE"
+          [max]="today" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <!-- <div class="form-group col-md-4">
+      <ng-select [items]="projectResponses" bindLabel="projectID" bindValue="projectID" [searchFn]="customSearchFn"
+      placeholder="Select Project" >
+<ng-template ng-option-tmp let-item="item" let-index="index">
+        <h5>{{item.projectID}} : {{item.projectDesc}}</h5>
+</ng-template>
+</ng-select>
+  </div> -->
+    <div class="form-group col-md-4">
+      <!-- <mat-form-field class="example-full-width">
+        <mat-label>Please Select Project</mat-label>
+        <input type="text" matInput [formControl]="sI_PROJECT" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let projectResponse of projectResponses | async"  [value]="projectResponse.projectID">
+            {{projectResponse.projectID}} : {{projectResponse.projectDesc}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field> -->
+     
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Project</mat-label>
+        <mat-select formControlName="sI_PROJECT" required (selectionChange)="onProjectChange($event)">
+          <mat-option [value]="projectResponse.projectID" *ngFor="let projectResponse of projectResponses">
+            {{projectResponse.projectID}} : {{projectResponse.projectDesc}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_PROJECT.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_PROJECT.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Billing To Customer </mat-label>
+        <mat-select formControlName="sI_CUSTOMER" required (selectionChange)="onCustomerChange($event)">
+          <mat-option [value]="billingCustomerResponse.value"
+            *ngFor="let billingCustomerResponse of billingCustomerResponses">{{billingCustomerResponse.text}}
+            <!-- <mat-option [value]="customerResponse.cusCode"
+            *ngFor="let customerResponse of customerResponses">{{customerResponse.cusName}} -->
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_CUSTOMER.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_CUSTOMER.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Contact Person</mat-label>
+        <mat-select formControlName="sI_CONTACT" required>
+          <mat-option [value]="contactResponse.value" *ngFor="let contactResponse of contactResponses">
+            {{contactResponse.text}} </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_CONTACT.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_CONTACT.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Bank</mat-label>
+        <mat-select formControlName="sI_CASHBANK" required>
+          <mat-option [value]="bankmasterDetail.cB_CODE" *ngFor="let bankmasterDetail of bankmasterDetails">
+            {{bankmasterDetail.cB_CODE}} : {{bankmasterDetail.cB_BANKNAME}} [{{bankmasterDetail.cB_ACCOUNTNO}}]
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_CASHBANK.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_CASHBANK.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <!-- <div class="form-group col-md-4">
+      <label for="exampleInputisAdvance">Is Advance </label>
+      <label class="switch" style="width: 100px">
+        <input type="checkbox" class="form-control" formControlName="isAdvance" />
+        <span class="slider round"></span>
+      </label>
+    </div> -->
+    <div class="form-group col-md-4">
+      <mat-slide-toggle>Is Advance</mat-slide-toggle>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Payment Terms </mat-label>
+        <mat-select formControlName="sI_PAYMENTTERMS" required>
+          <mat-option [value]="payTermsResponse.payTermCode" *ngFor="let payTermsResponse of payTermsResponses">
+            {{payTermsResponse.payTermDesc}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_PAYMENTTERMS.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_PAYMENTTERMS.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Payment Mode </mat-label>
+        <mat-select formControlName="sI_PAYMETHOD" required>
+          <mat-option value="W">Wire Transfer</mat-option>
+          <mat-option value="L">LC 30 Days</mat-option>
+          <mat-option value="C">Cash Payment</mat-option>
+          <mat-option value="C">Demand Draft</mat-option>
+          <!-- <mat-option [value]="payTermsResponse.payTermCode" *ngFor="let payTermsResponse of payTermsResponses">
+            {{payTermsResponse.payTermDesc}}
+          </mat-option> -->
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_PAYMETHOD.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_PAYMETHOD.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill">
+        <mat-label>Please Select Currency</mat-label>
+        <mat-select formControlName="sI_CURRENCY" required>
+          <mat-option [value]="currencyResponse.currencyCode" *ngFor="let currencyResponse of currencyResponses">
+            {{currencyResponse.currencyCode}} : {{currencyResponse.currencyName}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_CURRENCY.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_CURRENCY.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-md-4">
+      <mat-form-field appearance="fill" class="ddlwidth">
+        <mat-label>Please Select Billing Schedule</mat-label>
+        <mat-select formControlName="sI_BILLSCHEDULE" required>
+          <mat-option [value]="billingScheduleResponse.value"
+            *ngFor="let billingScheduleResponse of billingScheduleResponses">{{billingScheduleResponse.text}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="invoiceAddForm.controls.sI_BILLSCHEDULE.hasError('required')"></mat-error>
+        <mat-hint>{{invoiceAddForm.controls.sI_BILLSCHEDULE.value?.sound}}</mat-hint>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div *ngIf="invoiceItems.length>0">
+  <table mat-table [dataSource]="dataSourceAddItem" class="mat-elevation-z8 addIteminvoice">
+    <ng-container matColumnDef="siD_SNO">
+      <th mat-header-cell *matHeaderCellDef  class="addItemColor" >Sr. No.</th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_SNO}} </td>
+    </ng-container>
+    <ng-container matColumnDef="sID_GLCODE">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Gl A/C </th>
+      <td mat-cell *matCellDef="let element"> {{element.sID_GLCODE}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_ITEMDESC">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Item Description </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_ITEMDESC}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_ITEMDESC_Arabic">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Item Description-Arabic </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_ITEMDESC_Arabic}} </td>
+    </ng-container>
+    <!-- <ng-container matColumnDef="sID_GLName">
+      <th mat-header-cell *matHeaderCellDef> sID_GLName </th>
+      <td mat-cell *matCellDef="let element"> {{element.sID_GLName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="isRequired">
+      <th mat-header-cell *matHeaderCellDef> isRequired </th>
+      <td mat-cell *matCellDef="let element"> {{element.isRequired}} </td>
+    </ng-container> -->
+    <ng-container matColumnDef="siD_BILLQTY">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Qty</th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_BILLQTY}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_BILLWEIGHT">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Weight </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_BILLWEIGHT}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_IRATE">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Rate </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_IRATE}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_RATEPER">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Rate Per </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_RATEPER}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_RATEUOM">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> UOM </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_RATEUOM}} </td>
+    </ng-container>
+    <ng-container matColumnDef="siD_TOTAL">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> Total Value </th>
+      <td mat-cell *matCellDef="let element"> {{element.siD_TOTAL}} </td>
+      <!-- <td mat-footer-cell *matFooterCellDef> {{grand_total}} </td> -->
+    </ng-container>
+    <ng-container matColumnDef="vatAmount">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> VAT Amount </th>
+      <td mat-cell *matCellDef="let element"> {{element.vatAmount}} </td>
+    </ng-container>
+    <ng-container matColumnDef="vatPercent">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor"> VAT% </th>
+      <td mat-cell *matCellDef="let element"> {{element.vatPercent}} </td>
+    </ng-container>
+    <!-- <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+      <td mat-cell *matCellDef="let element"> {{element.createdDate | date: 'dd/MM/yyyy h:mm:ss a'}} </td>
+  </ng-container> -->
+    <ng-container matColumnDef="Update">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor">Edit</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" matTooltip="Edit"
+        (click)="editInvoiceItem(element)">
+          <i class="fa fa-edit"></i>
+        </button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Delete">
+      <th mat-header-cell *matHeaderCellDef class="addItemColor">Delete</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="warn" matTooltip="Delete" (click)="deleteInvoiceItem(element.Id,element.siD_TOTAL)">
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="ItemAddColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: ItemAddColumns;"></tr>
+    <!-- <tr mat-footer-row *matFooterRowDef="ItemAddColumns; sticky: true"></tr> -->
+  </table>
+</div>
+<div *ngIf="invoiceItems.length>0" class="form-group col-md-12 addItemColor">
+  Grand Total : {{grand_total}}
+</div>
+<div class="form-group col-md-12">
+  <button type="button" class="btn btn-primary space" (click)="addItem()"  [disabled]="!invoiceAddForm.valid">
+    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    Add Item</button>
+
+  <!-- AddItem Model Pop-Up -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="false" aria-hidden="true"
+    style="visibility: hidden;" #addModal data-target="#addModal">
+  </button>
+  <div class="modal " id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered addmodalwidth" role="document">
+      <div class="modal-content contentwidth">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle"> Add Item Details</h5>
+          <button type="button" class="close" #closeaddModal data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <label> <span class="required">*</span> Mandatory Field</label>
+        <div class="modal-body">
+          <form [formGroup]="itemAddForm" (ngSubmit)="onADD()" novalidate>
+
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>GL A/C<span class="required">*</span></mat-label>
+                <input type="text" matInput formControlName="sID_GLCODE" id="sID_GLCODE" readonly>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>GL A/C Name<span class="required">*</span></mat-label>
+                <input type="text" matInput formControlName="sID_GLName" id="sID_GLName" readonly>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-slide-toggle background-color: #3f51b5; formControlName="isRequired"
+                (selectionChange)="calcualateTotal()" checked enable>Required</mat-slide-toggle>
+              <!-- <mat-slide-toggle background-color: #3f51b5;formControlName="isRequired" [(ngModel)]="isChecked" checked enable>Required</mat-slide-toggle> -->
+            </div>
+            <div class="form-group col-md-12">
+              <mat-form-field class="descriptionwidth">
+                <mat-label>Please Enter Description<span class="required">*</span></mat-label>
+                <textarea matInput rows="5" cols="50" formControlName="siD_ITEMDESC" id="siD_ITEMDESC"></textarea>
+                <mat-error *ngIf="hasError('siD_ITEMDESC', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-12">
+              <mat-form-field class="descriptionwidth">
+                <mat-label>Description in Arabic<span class="required">*</span></mat-label>
+                <textarea matInput rows="5" cols="50" formControlName="siD_ITEMDESC_Arabic"
+                  id="siD_ITEMDESC_Arabic"></textarea>
+                <mat-error *ngIf="hasError('siD_ITEMDESC_Arabic', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>Please Enter Quantity<span class="required">*</span></mat-label>
+                <input type="number" (change)="calcualateTotal()" matInput formControlName="siD_BILLQTY"
+                  id="siD_BILLQTY">
+                <mat-error *ngIf="hasError('siD_BILLQTY', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>Please Enter Weight</mat-label>
+                <input type="number" matInput formControlName="siD_BILLWEIGHT" id="siD_BILLWEIGHT"
+                  ng-model="siD_BILLWEIGHT">
+                <!-- <mat-error *ngIf="hasError('siD_BILLWEIGHT', 'required')"></mat-error> -->
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>Please Enter Rate<span class="required">*</span></mat-label>
+                <input type="number" (change)="calcualateTotal()" matInput formControlName="siD_IRATE" id="siD_IRATE"
+                  ng-model="siD_IRATE">
+                <mat-error *ngIf="hasError('siD_IRATE', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>Please Enter Rate Per <span class="required">*</span></mat-label>
+                <input type="number" (change)="calcualateTotal()" matInput formControlName="siD_RATEPER"
+                  id="siD_RATEPER">
+                <mat-error *ngIf="hasError('siD_RATEPER', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>VAT Percent<span class="required">*</span></mat-label>
+                <input type="text" matInput formControlName="vatPercent" id="vatPercent" readonly>
+                <mat-error *ngIf="hasError('vatPercent', 'required')"></mat-error>
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>VAT Amount</mat-label>
+                <input type="number : '1.0-2' " matInput formControlName="vatAmount" id="vatAmount" readonly>
+                <!-- <mat-error *ngIf="hasError('vatAmount', 'required')"></mat-error> -->
+              </mat-form-field>
+            </div>
+            <div class="form-group col-md-4">
+              <mat-form-field appearance="fill" class="ddlwidth">
+                <mat-label>Unit Of Measure</mat-label>
+                <mat-select formControlName="siD_RATEUOM" (selectionChange)="calcualateTotal()">
+                  <mat-option [value]="uomResponse.uomCode" *ngFor="let uomResponse of uomResponses">
+                    {{uomResponse.uomCode}} : {{uomResponse.uomDesc}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group col-md-4">
+              <mat-form-field>
+                <mat-label>Total Value</mat-label>
+                <input type="text" matInput formControlName="siD_TOTAL" id="siD_TOTAL" readonly>
+                <!-- <mat-error *ngIf="hasError('siD_TOTAL', 'required')"></mat-error> -->
+              </mat-form-field>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group col-md-4">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    style="margin-top:25px;margin-right:8px">Close</button>
+                  <button type="submit" class="btn btn-primary regbtn" [disabled]="!itemAddForm.valid"
+                    style="margin-top:25px;">Save</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

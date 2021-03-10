@@ -19,8 +19,11 @@ import { ReportsComponent } from './componets/reports/reports.component';
 import { PurchaseOrderComponent } from './componets/reports/purchase-order/purchase-order.component';
 import { PoListComponent } from './componets/Procurement/po-list/po-list.component';
 import { RfqListComponent } from './componets/Procurement/rfq-list/rfq-list.component';
-import { PrListComponent } from './componets/Procurement/pr-list/pr-list.component'
-import {SalesInvoiceListComponent } from './componets/SalesEstimation/sales-invoice-list/sales-invoice-list.component'
+import { PrListComponent } from './componets/Procurement/pr-list/pr-list.component';
+import { SalesInvoiceListComponent } from './componets/SalesEstimation/sales-invoice-list/sales-invoice-list.component';
+import { NewInvoiceComponent} from './componets/SalesEstimation/new-invoice/new-invoice.component';
+import { SalesInvoiceReportComponent } from './componets/SalesEstimation/sales-invoice-report/sales-invoice-report.component';
+
 
 
 
@@ -51,7 +54,9 @@ const routes: Routes=[
 { path: 'po-list',component:PoListComponent,canActivate:[AuthGuard]},
 { path: 'rfq-list',component:RfqListComponent,canActivate:[AuthGuard]},
 { path: 'pr-list',component:PrListComponent,canActivate:[AuthGuard]},
-{path: 'sales-invoice-list',component:SalesInvoiceListComponent,canActivate:[AuthGuard]},
+{ path: 'sales-invoice-list',component:SalesInvoiceListComponent,canActivate:[AuthGuard]},
+{ path: 'new-invoice',component:NewInvoiceComponent,canActivate:[AuthGuard]},
+{path: 'sales-invoice-report',component:SalesInvoiceReportComponent,canActivate:[AuthGuard]},
 
 ]
 },

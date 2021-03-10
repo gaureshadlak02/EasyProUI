@@ -1,0 +1,69 @@
+export interface InvoiceAddItem {
+  siD_NO: number;
+  siD_SNO: number;
+  siD_PROJECT: number;
+  siD_TAGID?: any;
+  siD_GLCODE: string;
+  siD_ITEMDESC: string;
+  siD_BILLQTY: number;
+  siD_BILLWEIGHT: number;
+  siD_IRATE: number;
+  siD_RATEPER: number;
+  siD_RATEUOM: string;
+  siD_TOTAL: string;
+  siD_CURRENCY: string;
+  siD_TOTALLCY: number;
+  siD_STATUS: string;
+  vatPercent: number;
+  vatAmount: number;
+  siD_ITEMDESC_Arabic: string;
+  vatAmountLCY: number;
+  createdBy?: any;
+  creationDate?: any;
+  lastModifiedBy?: any;
+  lastModifiedDate?: any;
+}
+
+
+export interface AddInvoice {
+  SI_NO: string;
+  sI_DATE: Date;
+  sI_CUSTOMER: string;
+  sI_PROJECT: number;
+  sI_CASHBANK: string;
+  sI_CURRENCY: string;
+  sI_TOTALVALUE: number;
+  sI_TOTALVALUELCY: number;
+  sI_PAIDAMT: number;
+  sI_PAIDAMTLCY: number;
+  sI_PAYMENTTERMS: string;
+  taxCode: string;
+  vatPercentage: number;
+  vatAmount: number;
+  vatAmountLCY: number;
+  sI_CNOTE: string;
+  sI_COUNT: number;
+  sI_PAYMETHOD: string;
+  sI_CONTACT: string;
+  sI_BILLTOCOMPANY: string;
+  sI_BILLSCHEDULE?: any;
+  sI_INVOICENO: string;
+  sI_BCURRENCY?: string;
+  sI_BVALUE?: number;
+  sI_CONVRATE: number;
+  sI_RETENSION?: string;
+  sI_SENTDATE: Date;
+  sI_SENTBY: number;
+  isAdvance: string;
+  totalInvBalToBePaid?: number;
+  acknowledgeInvDate: Date;
+  expectedRcptDate?: Date;
+  sI_Status: string;
+  compID: number;
+  branchID: number;
+  remarks?: string;
+  sI_USERID: number;
+  sI_SYSDATE: Date;
+  lastModifiedBy?: number;
+  lastModifiedDate?: Date;
+}

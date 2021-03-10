@@ -253,8 +253,8 @@ export class TicketDetailsComponent {
         status:"New",
       }
         //console.log(EmailBody);
-        this.ticketService.SendEmailTicket(EmailBody).subscribe((res: any) => {
-         });
+        // this.ticketService.SendEmailTicket(EmailBody).subscribe((res: any) => {
+        //  });
       this.toastr.success("Added Sucessfully");
       this.NewTicketForm.reset();
       this.ticketmaster();
@@ -343,8 +343,8 @@ export class TicketDetailsComponent {
         status:ticketStatus[0].status,
       }
         // console.log("EmailBody",EmailBody);
-         this.ticketService.SendEmailTicket(EmailBody).subscribe((res: any) => {
-         });
+        //  this.ticketService.SendEmailTicket(EmailBody).subscribe((res: any) => {
+        //  });
       this.toastr.success("Updated Sucessfully");
       this.ticketmaster();
       this.closeModal.nativeElement.click();

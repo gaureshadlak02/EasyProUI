@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild,ComponentFactoryResolver,ComponentRef,AfterViewInit, Inject,TemplateRef,ViewContainerRef} from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { TableUtil } from "../../../shared/tableUtil";
@@ -6,6 +6,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { analyzeAndValidateNgModules } from "@angular/compiler";
 import { FormControl, FormGroup } from "@angular/forms";
 import { SalesEstimationService } from "../../../services/sales-estimation.service";
+import { NewInvoiceComponent } from '../../SalesEstimation/new-invoice/new-invoice.component';
 
 @Component({
   selector: "app-sales-invoice-list",
@@ -14,38 +15,43 @@ import { SalesEstimationService } from "../../../services/sales-estimation.servi
 })
 export class SalesInvoiceListComponent {
   displayedColumns: string[] = [
+    "Update",
+    "sI_INVOICENO",
     "invoiceNo",
     "invoiceDate",
-    "projectNo",
-    "customerCode",
-    "customerName",
-    "billingCustomerCode",
+    "dueDate",
+     "projectNo",
+    // "customerCode",
+    // "customerName",
+    // "billingCustomerCode",
     "billedCustomerName",
-    "billingContact",
-    "bank",
+    "creditNoteAmount",
+    // "billingContact",
+    // "bank",
     "currency",
     "totalInvoiceValue",
     "totalInvoiceValueLCY",
     "totalPaidAmount",
     "totalPaidAmountLCY",
-    "paymentTermsCode",
-    "paymenMethod",
-    "taxCode",
-    "vatPercentage",
-    "vatAmount",
-    "vatAmountLCY",
-    "sI_CNOTE",
-    "sI_COUNT",
+    "balanceAmount",
+    "statusName",
+    // "sI_Status",
+    "createdByName",
+    "createdDate",
+    "lastModifiedBy",
+    "lastModifiedDate",
+    "Delete",
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild('appenHere', {static : true, read : ViewContainerRef}) target: ViewContainerRef;
   dataSource: MatTableDataSource<any>;
   updateForm: any;
   showSpinner: any;
   poDetails: any;
   statusResponses:any;
-
-  constructor(private salesEstimationService: SalesEstimationService) {
+  componentRef: any;
+  constructor(private salesEstimationService: SalesEstimationService,private componentFactoryResolver: ComponentFactoryResolver) {
     this.poStatus();
     this.updateForm = new FormGroup({
       filterstatus: new FormControl(""),
@@ -58,9 +64,16 @@ export class SalesInvoiceListComponent {
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        console.log(this.poDetails);
       }
     });
   }
+  addNewComponent() {
+    let childComponent = this.componentFactoryResolver.resolveComponentFactory(NewInvoiceComponent);
+    this.componentRef = this.target.createComponent(childComponent);
+    
+  }
+
   ngAfterViewInit() {}
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
@@ -71,6 +84,7 @@ export class SalesInvoiceListComponent {
     this.salesEstimationService.poStatus().subscribe((res: any) => {
       if (res !== null) {
         this.statusResponses = res;
+      //  console.log(this.statusResponses)
       }
     });
   }
@@ -86,6 +100,7 @@ export class SalesInvoiceListComponent {
       // const filter = this.poDetails.sort((x, y) => x.ticketId > y.ticketId ? -1 : 1);
 
       this.dataSource = new MatTableDataSource(this.poDetails);
+     
     }
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;

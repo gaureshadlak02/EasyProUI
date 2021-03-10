@@ -9,6 +9,27 @@ import { ErrorHandlerService } from './error-handler.service';
   providedIn: 'root'
 })
 export class CommonService {
+  currencyRates(currencyCode: any,conversionDate:any) {
+    //+"?taxcode="+taxcode+"&effectDate="+effectivedate
+    return this._http.get(baseUrl+UrlNames.getCurrencyRates+"?currencyCode="+currencyCode+"&conversionDate="+conversionDate).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+  uomMaster() {
+    return this._http.get(baseUrl+UrlNames.getUnitofMeasure).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
 
   currencyMaster() {
     return this._http.get(baseUrl+UrlNames.getCurrencies).pipe(

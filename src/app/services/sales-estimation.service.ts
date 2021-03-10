@@ -9,7 +9,38 @@ import { ErrorHandlerService } from './error-handler.service';
   providedIn: 'root'
 })
 export class SalesEstimationService {
-  
+  contactByCustomercode(customerCode :any) {
+    return this._http.get(baseUrl+UrlNames.GetContactByCustomerCode+"?customercode="+customerCode).pipe(
+      switchMap((res:any)=>{
+        return of (res)
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+       return this.errorHandler.processError(error);
+      })
+    );
+  }
+  getGLCode(cusCode: any) {
+    return this._http.get(baseUrl+UrlNames.GetCustomerPostingGroupbyCustomer+"?cuscode="+cusCode).pipe(
+      switchMap((res:any)=>{
+        return of (res)
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+       return this.errorHandler.processError(error);
+      })
+    );
+  }
+
+  getGLName(gLCode) {
+    return this._http.get(baseUrl+UrlNames.GetChartofAcctDesc+"?glCode="+gLCode).pipe(
+      switchMap((res)=>{
+        return of (res)
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        console.log(error);
+       return this.errorHandler.processError(error);
+      })
+    );
+  }
   customerPostingGlAcctMaster() {
     return this._http.get(baseUrl+UrlNames.customerPostingGlAcct).pipe(
     switchMap((res: any) => {
@@ -74,8 +105,49 @@ export class SalesEstimationService {
       })
     );
   }
+  GetSalesInvoice() {
+    return this._http.get(baseUrl+UrlNames.GetSalesInvoice).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+  GetCreditNotes() {
+    return this._http.get(baseUrl+UrlNames.GetCreditNote).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+
   salesInvoice() {
     return this._http.get(baseUrl+UrlNames.SalesInvoice).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+  saveInvoice(reqParams: any){
+    return this._http.post(baseUrl+UrlNames.saveInvoice, reqParams).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+  saveInvoiceItem(reqParams: any){
+    return this._http.post(baseUrl+UrlNames.saveInvoiceItem, reqParams).pipe(
       switchMap((res: any) => {
         return of(res);
       }),

@@ -65,4 +65,10 @@ th,td
       -webkit-transform: translateX(-50%) translateY(-50%);
       transform: translateX(-50%) translateY(-50%); */
   }
- 
+  .mat-button
+  {
+    min-width: 0;
+    border: solid;
+    line-height: 0px;
+    padding: 0px;
+  }

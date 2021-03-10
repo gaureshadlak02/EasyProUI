@@ -9,6 +9,26 @@ import { ErrorHandlerService } from './error-handler.service';
   providedIn: 'root'
 })
 export class FinanceService {
+  taxCodePercentage(taxcode: any, effectivedate: any) {
+    return this._http.get(baseUrl+UrlNames.GetTaxCodePercentage+"?taxcode="+taxcode+"&effectDate="+effectivedate).pipe(
+      switchMap((res:any)=>{
+        return of (res)
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+       return this.errorHandler.processError(error);
+      })
+    );
+  }
+  taxCodeDetail() {
+   return this._http.get(baseUrl+UrlNames.taxCodeDetails).pipe(
+     switchMap((res:any)=>{
+       return of (res);
+     }),
+     catchError((error: any, caught: Observable<any>) => {
+      return this.errorHandler.processError(error);
+     })
+   );
+  }
 
   bankMaster() {
     return this._http.get(baseUrl+UrlNames.BankMaster).pipe(

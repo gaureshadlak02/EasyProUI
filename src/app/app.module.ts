@@ -37,6 +37,9 @@ import { RfqListComponent } from './componets/Procurement/rfq-list/rfq-list.comp
 import { PrListComponent } from './componets/Procurement/pr-list/pr-list.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SalesInvoiceListComponent } from './componets/SalesEstimation/sales-invoice-list/sales-invoice-list.component';
+import { NewInvoiceComponent } from './componets/SalesEstimation/new-invoice/new-invoice.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { SalesInvoiceReportComponent } from './componets/SalesEstimation/sales-invoice-report/sales-invoice-report.component';
 
 
 
@@ -65,6 +68,8 @@ import { SalesInvoiceListComponent } from './componets/SalesEstimation/sales-inv
     RfqListComponent,
     PrListComponent,
     SalesInvoiceListComponent,
+    NewInvoiceComponent,
+    SalesInvoiceReportComponent,
  
     
     
@@ -82,6 +87,7 @@ import { SalesInvoiceListComponent } from './componets/SalesEstimation/sales-inv
     RouterModule,
     ReportViewerModule,
     NgxSpinnerModule,
+    NgSelectModule
    // ProgressSpinnerMode,
     
 

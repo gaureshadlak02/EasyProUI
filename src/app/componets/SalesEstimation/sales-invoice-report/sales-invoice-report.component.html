@@ -1,0 +1,13 @@
+<h3 class="heading">Sales Invoice Report</h3>
+<div >
+    <ssrs-reportviewer
+        [reportserver]="reportServer"
+        [reporturl]="reportUrl"
+        [showparameters]="showParameters" 
+        [language]="language" 
+        [parameters]=this.invoiceNo
+        [width] ="width" 
+        [height]="height" 
+        [toolbar]="toolbar" >
+    </ssrs-reportviewer>
+</div>

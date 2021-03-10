@@ -1,7 +1,19 @@
+<div class="SalesInvoiceList">
 <h3 class="heading">Sales Invoice List</h3>
 <div class="marginbound ">
     <div class="row heading">
-      <div class="col-md-8">
+      <!-- <a routerLink="home/new-invoice" class="nav-link" routerLinkActive="active">Add Employee</a> -->
+      <div class="col-md-2">
+        <button class="btn btn-primary space" [routerLink]="['/home/new-invoice']">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+          New Invoice</button>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary space" >
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+          Credit Note List</button>
+      </div>
+      <div class="col-md-2">
         <button class="btn btn-success succes" (click)="exportTable()">
           <i class="fa fa-file-excel-o" aria-hidden="true"></i>
           Export To Excel</button>
@@ -36,14 +48,31 @@
 <mat-card>
     <div class="table-responsive ">
       <table mat-table id="SalesInvoiceTable" class="table table-bordered hoverTable" [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="invoiceNo">
+        <ng-container matColumnDef="Update">
+          <th mat-header-cell *matHeaderCellDef ></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary"  matTooltip="Edit" (click)="editCustomer(element.id)">
+              <i class="fa fa-edit"></i>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="sI_INVOICENO">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice No</th>
-          <td mat-cell *matCellDef="let element"> <a href="/home/purchase-order?PONo={{element.invoiceNo}}"
+          <td mat-cell *matCellDef="let element"> <a href="/home/purchase-order?PONo={{element.sI_INVOICENO}}"
+              target="_blank">{{element.sI_INVOICENO}}</a> </td>
+        </ng-container>
+        <ng-container matColumnDef="invoiceNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>SI No</th>
+          <td mat-cell *matCellDef="let element"> <a href="/home/sales-invoice-report?InvoiceNo={{element.invoiceNo}}"
               target="_blank">{{element.invoiceNo}}</a> </td>
         </ng-container>
         <ng-container matColumnDef="invoiceDate">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice Date</th>
             <td mat-cell *matCellDef="let element"> {{element.invoiceDate | date: 'dd/MM/yyyy'}} </td>
+          </ng-container>
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Due Date</th>
+            <td mat-cell *matCellDef="let element"> {{element.dueDate | date: 'dd/MM/yyyy'}} </td>
           </ng-container>
         <ng-container matColumnDef="projectNo">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Project No</th>
@@ -53,14 +82,19 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Code</th>
           <td mat-cell *matCellDef="let element"> {{element.customerCode}} </td>
         </ng-container>
-       
         <ng-container matColumnDef="customerName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
           <td mat-cell *matCellDef="let element"> {{element.customerName}} </td>
         </ng-container>
         <ng-container matColumnDef="billingCustomerCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Billing Customer Code</th>
-          <td mat-cell *matCellDef="let element"> {{element.billingCustomerCode}} </td>
+          <td mat-cell *matCellDef="let element" > {{element.billingCustomerCode}} </td>
+        </ng-container>
+        <ng-container matColumnDef="creditNoteAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit Memo</th>
+          <!-- <a href="/home/purchase-order?PONo={{element.sI_INVOICENO}}"
+              target="_blank">{{element.sI_INVOICENO}}</a>  -->
+          <td mat-cell *matCellDef="let element" align="right"><a href="" target="_blank"> {{element.creditNoteAmount|number:'1.2-2'}}</a> </td>
         </ng-container>
         <ng-container matColumnDef="billedCustomerName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Billed Customer Name</th>
@@ -75,44 +109,49 @@
           <td mat-cell *matCellDef="let element"> {{element.bank}} </td>
         </ng-container>
         <ng-container matColumnDef="currency">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Currency</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Curr</th>
           <td mat-cell *matCellDef="let element"> {{element.currency}} </td>
         </ng-container>
         <ng-container matColumnDef="totalInvoiceValue">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Invoice Value</th>
-          <td mat-cell *matCellDef="let element"> {{element.totalInvoiceValue}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice Value</th>
+          <td mat-cell *matCellDef="let element" align="right"> {{element.totalInvoiceValue|number:'1.2-2'}} </td>
         </ng-container>
         <ng-container matColumnDef="totalInvoiceValueLCY">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Invoice Value LCY</th>
-          <td mat-cell *matCellDef="let element"> {{element.totalInvoiceValueLCY}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice Value LCY</th>
+          <td mat-cell *matCellDef="let element" align="right"> {{element.totalInvoiceValueLCY|number:'1.2-2'}} </td>
         </ng-container>
         <ng-container matColumnDef="totalPaidAmount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Paid Amount</th>
-          <td mat-cell *matCellDef="let element"> {{element.totalPaidAmount}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid Amount</th>
+          <td mat-cell *matCellDef="let element" align="right"> <a href="" target="_blank">{{element.totalPaidAmount|number:'1.2-2'}} </a></td>
         </ng-container>
         <ng-container matColumnDef="totalPaidAmountLCY">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Paid Amount LCY</th>
-          <td mat-cell *matCellDef="let element"> {{element.totalPaidAmountLCY}} </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid Amount LCY</th>
+          <td mat-cell *matCellDef="let element" align="right"> {{element.totalPaidAmountLCY|number:'1.2-2'}} </td>
         </ng-container>
-        <ng-container matColumnDef="paymentTermsCode">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Terms Code</th>
-          <td mat-cell *matCellDef="let element" > {{element.paymentTermsCode}} </td>
+        	
+        <ng-container matColumnDef="balanceAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Balance Amount</th>
+          <td mat-cell *matCellDef="let element" align="right"> {{element.balanceAmount|number:'1.2-2'}} </td>
         </ng-container>
-        <ng-container matColumnDef="paymenMethod">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Paymen Method</th>
-          <td mat-cell *matCellDef="let element"> {{element.paymenMethod}} </td>
+        <ng-container matColumnDef="statusName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let element" > <a href="" target="_blank">{{element.statusName}}</a> </td>
         </ng-container>
-        <ng-container matColumnDef="taxCode">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tax Code</th>
-          <td mat-cell *matCellDef="let element"> {{element.taxCode}} </td>
+        <ng-container matColumnDef="createdByName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Created By Name</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdByName}} </td>
         </ng-container>
-        <ng-container matColumnDef="vatPercentage">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Vat Percentage</th>
-          <td mat-cell *matCellDef="let element"> {{element.vatPercentage}} </td>
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdDate| date: 'dd/MM/yyyy h:mm:ss a'}} </td>
         </ng-container>
-        <ng-container matColumnDef="vatAmount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Vat Amount</th>
-          <td mat-cell *matCellDef="let element"> {{element.vatAmount}} </td>
+        <ng-container matColumnDef="lastModifiedBy">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Modified By</th>
+          <td mat-cell *matCellDef="let element"> {{element.lastModifiedBy}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastModifiedDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Modified Date</th>
+          <td mat-cell *matCellDef="let element"> {{element.lastModifiedDate|  date: 'dd/MM/yyyy h:mm:ss a'}} </td>
         </ng-container>
         <ng-container matColumnDef="vatAmountLCY">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Vat Amount LCY</th>
@@ -126,7 +165,15 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>SI COUNT</th>
           <td mat-cell *matCellDef="let element"> {{element.sI_COUNT }} </td>
         </ng-container>
-       
+        
+        <ng-container matColumnDef="Delete">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="warn"  matTooltip="Delete" (click)="deleteBank(element.id)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
@@ -139,3 +186,7 @@
     </div>
     <mat-paginator [pageSizeOptions]="[10, 20, 30, 100, dataSource?.data?.length]" showFirstLastButtons></mat-paginator>
   </mat-card>
+</div>
+<div class="row" #appenHere></div>
+<router-outlet></router-outlet>
+  
