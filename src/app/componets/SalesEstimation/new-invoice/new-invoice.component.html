@@ -37,7 +37,7 @@
      
       <mat-form-field appearance="fill" class="ddlwidth">
         <mat-label>Please Select Project</mat-label>
-        <mat-select formControlName="sI_PROJECT" required (selectionChange)="onProjectChange($event)">
+        <mat-select  [disabled]="selectedInvoice !== 0" formControlName="sI_PROJECT" required (selectionChange)="onProjectChange($event)">
           <mat-option [value]="projectResponse.projectID" *ngFor="let projectResponse of projectResponses">
             {{projectResponse.projectID}} : {{projectResponse.projectDesc}}
           </mat-option>
@@ -91,7 +91,7 @@
       </label>
     </div> -->
     <div class="form-group col-md-4">
-      <mat-slide-toggle>Is Advance</mat-slide-toggle>
+      <mat-slide-toggle formControlName="isAdvance">Is Advance</mat-slide-toggle>
     </div>
     <div class="form-group col-md-4">
       <mat-form-field appearance="fill" class="ddlwidth">
@@ -222,7 +222,7 @@
     <ng-container matColumnDef="Delete">
       <th mat-header-cell *matHeaderCellDef class="addItemColor">Delete</th>
       <td mat-cell *matCellDef="let element">
-        <button mat-button color="warn" matTooltip="Delete" (click)="deleteInvoiceItem(element.Id,element.siD_TOTAL)">
+        <button mat-button color="warn" matTooltip="Delete" (click)="deleteInvoiceItem(element.siD_SNO,element.siD_TOTAL)">
           <i class="fa fa-trash"></i>
         </button>
       </td>

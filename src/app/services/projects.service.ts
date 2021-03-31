@@ -19,6 +19,17 @@ export class ProjectsService {
       })
     );
   }
+  billingScheduleByBillingCode(projectid: any,Billschedulecode : any) {
+    return this._http.get(baseUrl+UrlNames.getBillingScheduleByBillingCode+"?projectid="+projectid + "&Billschedulecode="+ Billschedulecode).pipe(
+      switchMap((res:any)=>{
+        return of (res)
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+       return this.errorHandler.processError(error);
+      })
+    );
+  }
+
   billingCustomer(projectID:any) {
     return this._http.get(baseUrl+UrlNames.getBillingCustomer+"?projectid="+projectID).pipe(
       switchMap((res:any)=>{

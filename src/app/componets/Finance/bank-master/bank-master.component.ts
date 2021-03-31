@@ -148,9 +148,9 @@ export class BankMasterComponent  {
       cB_FAX: this.bankAddForm.get("cB_FAX").value,
       postFlg: this.bankAddForm.get("postFlg").value,
     };
-    console.log(body)
+   // console.log(body)
     this.financeService.bankMasterUpdate(body).subscribe((res: any) => {
-      console.log(res);
+     // console.log(res);
       this.bankMaster();
       this.toastr.success("Added Sucessfully");
       this.bankAddForm.reset();

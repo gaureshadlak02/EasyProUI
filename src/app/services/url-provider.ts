@@ -1,19 +1,17 @@
-export const baseUrl = 'http://localhost:56426/';
-// export const baseUrl = 'http://192.168.16.9:401/';
-// export const baseUrl = 'http://localhost:401/';
-//export const baseUrl = 'http://212.12.179.132:401/';
-export enum UrlNames {
+import { environment } from "environments/environment";
+export const baseUrl = environment.baseUrl;
 
+export enum UrlNames {
   //ITAdmin Related
-  Login = 'ITAdmin/Login',
-  Registration = 'ITAdmin/AddUpdateUser',
-  GetUsers = 'ITAdmin/GetUsers',
-  UpdateUser = 'ITAdmin/UpdateUser',
-  DeleteUser = 'ITAdmin/DeleteUser/',
+  Login = "ITAdmin/Login",
+  Registration = "ITAdmin/AddUpdateUser",
+  GetUsers = "ITAdmin/GetUsers",
+  UpdateUser = "ITAdmin/UpdateUser",
+  DeleteUser = "ITAdmin/DeleteUser/",
   ChangePassword = "ITAdmin/changepassword",
-  //HRPayroll Related 
-  EmployeeMaster = 'HRPayroll/GetEmployeeMasters',
-  UserProfileById = 'HRPayroll/GetEmployeeById/',
+  //HRPayroll Related
+  EmployeeMaster = "HRPayroll/GetEmployeeMasters",
+  UserProfileById = "HRPayroll/GetEmployeeById/",
   departmentMaster = "HRPayroll/GetDepartments",
   //Common Related
   getCountries = "Common/GetCountries",
@@ -22,9 +20,12 @@ export enum UrlNames {
   getCurrencies = "Common/GetCurrencies",
   getUnitofMeasure = "Common/GetMaterialUOM",
   getCurrencyRates = "Common/GetCurrencyRates",
-  //Finanace Related 
-  BankMaster = 'Finance/GetBankMaster',
-  BankMasterDelete = 'Finance/DeleteBankMaster/',
+  GetApprovalTable = "Common/GetApprovalTable",
+  AddUpdateApprovalTable = "Common/AddUpdateApprovalTable",
+
+  //Finanace Related
+  BankMaster = "Finance/GetBankMaster",
+  BankMasterDelete = "Finance/DeleteBankMaster/",
   bankMasterUpdate = "Finance/AddUpdateBankMaster",
   glCode = "Finance/GetGLChartofAccounts",
   taxCodeDetails = "Finance/GetTaxCodeDetail",
@@ -41,30 +42,33 @@ export enum UrlNames {
   //TicketDetails = "TicketMaster/GetTicketMasters",
   TicketDetails = "TicketSystem/GetTicketMastersEmpWise",
   TicketDetailsUpdate = "TicketSystem/AddUpdateTicketDetail",
-  TicketMasterDelete = 'TicketSystem/DeleteTicketMaster/',
+  TicketMasterDelete = "TicketSystem/DeleteTicketMaster/",
   TicketDetailsRemark = "TicketSystem/GetTicketDetails",
   //Procurement Related
   PoListMaster = "Procurement/GetPurchaseOrderList",
   RFQListMaster = "Procurement/GetRFQList",
   PRListMaster = "Procurement/GetPRList",
   POStatus = "Procurement/GetPOStatus",
-  //Projects Related 
+  //Projects Related
   getProject = "Projects/GetProjectMaster",
   getBillingSchedule = "Projects/GetProjectBillingSchedule",
   getBillingCustomer1 = "Projects/GetProjectBillingCustomer",
   getBillingCustomer = "Projects/GetProjectBillingCustomerByProject",
   getBillingScheduleByProject = "Projects/GetProjectBillingSchedulesbyProject",
+  getBillingScheduleByBillingCode = "Projects/GetProjectBillingSchedulesbyProjectAndCode",
   //SalesEstimation Related
-  GetSalesInvoice="SalesEstimation/GetSalesInvoice",
+  GetSalesInvoice = "SalesEstimation/GetSalesInvoice",
   SalesInvoice = "SalesEstimation/GetSalesInvoiceHeaderView",
-  CustomerMaster = 'SalesEstimation/GetCustomerMasters',
-  customerMasterUpdate = 'SalesEstimation/AddUpdateCustomerMaster',
-  customerMasterdelete = 'SalesEstimation/DeleteCustomerMaster/',
+  CustomerMaster = "SalesEstimation/GetCustomerMasters",
+  customerMasterUpdate = "SalesEstimation/AddUpdateCustomerMaster",
+  customerMasterdelete = "SalesEstimation/DeleteCustomerMaster/",
   customerPostingGlAcct = "SalesEstimation/GetCustomerPostingGroups",
   getContacts = "SalesEstimation/GetCustomerContactMaster",
   GetCustomerPostingGroupbyCustomer = "SalesEstimation/GetCustomerPostingGroupbyCustomer",
   GetContactByCustomerCode = "SalesEstimation/GetCustomerContactByProject",
-  saveInvoice = 'SalesEstimation/AddUpdateSalesInvoice',
-  saveInvoiceItem = 'SalesEstimation/AddUpdateSalesInvoiceItem',
-  GetCreditNote="SalesEstimation/GetCreditNote",
+  saveInvoice = "SalesEstimation/AddUpdateSalesInvoice",
+  saveInvoiceItem = "SalesEstimation/AddUpdateSalesInvoiceItem",
+  GetCreditNote = "SalesEstimation/GetCreditNote",
+  AddUpdateCreditNote = "SalesEstimation/AddUpdateCreditNote",
+  GetSalesInvoiceItems = "SalesEstimation/GetSalesInvoiceItems",
 }

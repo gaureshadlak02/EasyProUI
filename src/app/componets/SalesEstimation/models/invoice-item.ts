@@ -3,7 +3,7 @@ export interface InvoiceAddItem {
   siD_SNO: number;
   siD_PROJECT: number;
   siD_TAGID?: any;
-  siD_GLCODE: string;
+  sID_GLCODE: string;
   siD_ITEMDESC: string;
   siD_BILLQTY: number;
   siD_BILLWEIGHT: number;

@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpHeaders,HttpResponse, HttpErrorResponse, HttpEvent, HttpRequest} from '@angular/common/http';
 import { catchError, switchMap} from 'rxjs/operators';
-import { throwError, of, Observable} from 'rxjs';
+import { throwError, of, Observable, from} from 'rxjs';
 import {baseUrl,UrlNames} from './url-provider';
+//import {UrlNames} from './url-provider';
+//import {baseUrl}  from 'environments';
+ //import {baseUrl} from '../../environments/environment.prod';
+ import {environment} from '../../environments/environment';
+
 import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({
@@ -36,7 +41,6 @@ export class SalesEstimationService {
         return of (res)
       }),
       catchError((error: any, caught: Observable<any>) => {
-        console.log(error);
        return this.errorHandler.processError(error);
       })
     );
@@ -115,6 +119,16 @@ export class SalesEstimationService {
       })
     );
   }
+  GetSalesInvoiceItems() {
+    return this._http.get(baseUrl+UrlNames.GetSalesInvoiceItems).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
   GetCreditNotes() {
     return this._http.get(baseUrl+UrlNames.GetCreditNote).pipe(
       switchMap((res: any) => {
@@ -148,6 +162,17 @@ export class SalesEstimationService {
   }
   saveInvoiceItem(reqParams: any){
     return this._http.post(baseUrl+UrlNames.saveInvoiceItem, reqParams).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+
+  AddUpdateCreditNote(reqParams: any){
+    return this._http.post(baseUrl+UrlNames.AddUpdateCreditNote, reqParams).pipe(
       switchMap((res: any) => {
         return of(res);
       }),

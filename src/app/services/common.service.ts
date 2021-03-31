@@ -30,6 +30,26 @@ export class CommonService {
       })
     );
   }
+  GetApprovalTable() {
+    return this._http.get(baseUrl+UrlNames.GetApprovalTable).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
+  AddUpdateApprovalTable(reqParams: any){
+    return this._http.post(baseUrl+UrlNames.AddUpdateApprovalTable, reqParams).pipe(
+      switchMap((res: any) => {
+        return of(res);
+      }),
+      catchError((error: any, caught: Observable<any>) => {
+        return this.errorHandler.processError(error);
+      })
+    );
+  }
 
   currencyMaster() {
     return this._http.get(baseUrl+UrlNames.getCurrencies).pipe(
